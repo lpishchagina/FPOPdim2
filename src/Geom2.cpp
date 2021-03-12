@@ -37,14 +37,14 @@ void Geom2::ExclusionD2(Disk disk){rect_t.Exclusion_disk(disk);}
 void Geom2::UpdateDisks(Disk disk_t){
   std::list<Disk>::iterator iter;
   iter = disks_t_1.begin();
+ 
   while( iter != disks_t_1.end()){
     Disk disk = *iter;
     Rect rect = rect_t;
     rect.Intersection_disk(disk);
-    if(rect.IsEmpty_rect()){
-      iter = disks_t_1.erase(iter);
-      --iter;
-    }
+   
+    if(rect.IsEmpty_rect()){iter = disks_t_1.erase(iter); --iter;}
     ++iter;
   }
 }
+

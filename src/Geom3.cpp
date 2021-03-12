@@ -29,17 +29,14 @@ bool Geom3::IsEmpty(){return false;}
 void Geom3::UpdateDisks(Disk disk_t){
   std::list<Disk>::iterator iter;
   iter = disks_t_1.begin();
+    
   while( iter != disks_t_1.end()){
     Disk disk = *iter;
     double dist = (disk_t.get_center1() - disk.get_center1())*(disk_t.get_center1()-disk.get_center1());
     dist = dist + (disk_t.get_center2() - disk.get_center2())*(disk_t.get_center2()-disk.get_center2());
-    if (sqrt(dist) >= (disk.get_radius() + disk_t.get_radius())){
-      iter = disks_t_1.erase(iter);
-      --iter;
-    }
+    
+    if (sqrt(dist) >= (disk.get_radius() + disk_t.get_radius())){ iter = disks_t_1.erase(iter);--iter;}
+    
     ++iter; 
   }
 }
-   
-
-//---------------------------------End------------------------------------------//

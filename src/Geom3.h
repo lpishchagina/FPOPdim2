@@ -34,7 +34,7 @@ public:
   bool IsEmpty();
   void IntersectionD2(Disk disk){};             
   void ExclusionD2(Disk disk){};                 
-  void UpdateDisks(Disk disk_t);
+  void UpdateDisks(Disk d);
 
 };
 

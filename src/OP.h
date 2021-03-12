@@ -8,11 +8,13 @@
 #include "Geom2.h"
 #include "Geom3.h"
 
+#include <fstream>
 #include <iostream>
 #include <vector>
 #include <list>
 #include <iterator>
 #include <Rcpp.h>
+#include <string> 
 
 using namespace Rcpp;
 using namespace std;
@@ -31,7 +33,7 @@ private:
   double* m;                                            // "globalCost" = m[n+1] - changepoints.size()*penalty
   GeomX geom_activ;
   std::list<GeomX> list_geom;                            //list of geom
-  std::list<Disk> list_disks;                    //list of disks
+  std::list<Disk> list_disk;                    //list of disks
 
 public:
 
@@ -80,36 +82,45 @@ public:
   
   void algoFPOP(std::vector<double>& x1, std::vector<double>& x2, int type){
     //preprocessing
+    
     n = x1.size();
     sx12 = vect_sx12(x1, x2);           
     m[0] = 0;
     double** last_chpt_mean = new double*[3];         // vectors of best last changepoints, mean1 and mean2
     for(unsigned int i = 0; i < 3; i++) {last_chpt_mean[i] = new double[n];}
-    //unsigned int nb_disk;
-    //  std::ofstream test_file;
-    //  test_file.open("test.txt");
-  
+    
+    //open file
+    unsigned int nb_disk;
+    
+    std::ofstream test_file;
+    std::string d = std::to_string(n);
+    std::string ty = std::to_string(type);
+   // test_file.open("exclusion_t"+ty+"_d"+d+".txt");
+   test_file.open("test.txt");
     //Algorithm
     for (unsigned int t = 0; t < n ; t++){
+      
       Cost cost_activ;
       double min_val = INFINITY; //min value of cost
       double mean1;                                   //means for (lbl, t)
       double mean2;
       unsigned int lbl; //best last position for t
       
-      if (type > 1) {list_disks.clear();}
-      typename std::list<GeomX>::iterator it;
+      list_disk.clear();
+      typename std::list<GeomX>::iterator it_list;
+      
       //First run: search min
-      it = list_geom.begin();
-      while(it!= list_geom.end()){
-        unsigned int u = it->get_label_t();
+      it_list = list_geom.begin();
+      while(it_list!= list_geom.end()){
+        unsigned int u = it_list->get_label_t();
           
         if (type > 1){
           Cost cost = Cost(u, t-1, sx12[u], sx12[t], m[u]);
           double r2 = (m[t] - m[u] - cost.get_coef_Var())/cost.get_coef();
           Disk disk = Disk(cost.get_mu1(),cost.get_mu2(), sqrt(r2));
-          list_disks.push_back(disk);
+          list_disk.push_back(disk);
         }
+        
         Cost cost_activ = Cost(u, t, sx12[u], sx12[t + 1], m[u]);
         if(cost_activ.get_min() <= min_val){
           lbl = u;
@@ -117,7 +128,7 @@ public:
           mean1 = cost_activ.get_mu1();
           mean2 = cost_activ.get_mu2();  
         }
-        ++it;
+        ++it_list;
       }
       Cost cost_t = Cost(t, t, sx12[t], sx12[t + 1], m[t]);
       if(cost_t.get_min() <= min_val){
@@ -134,53 +145,58 @@ public:
       last_chpt_mean[2][t] = mean2;     //last_chpt_mean[2] - vector of means (lbl,t) for y2
       
       //new geom D_tt
-      geom_activ = GeomX(t, list_disks); 
+      geom_activ = GeomX(t, list_disk); 
       list_geom.push_back(geom_activ);
       
-      //Second run: pruning
-      it = list_geom.begin();      
-      while (it != list_geom.end()){
-        
-        lbl = it -> get_label_t();
-        Cost cost = Cost(lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
-        double r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
-        if (r2 <= 0){
-          it = list_geom.erase(it);
-          --it;
-        } 
+      it_list = list_geom.begin();      
+      while (it_list != list_geom.end()){
+        lbl = it_list->get_label_t();
+        Cost cost_inter = Cost(lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
+        double r2_inter = (m[t + 1] - m[lbl] - cost_inter.get_coef_Var())/cost_inter.get_coef();
+        //PELT
+        if (r2_inter <= 0){it_list = list_geom.erase(it_list); --it_list; }
+        //FPOP
         else{
-          Disk disk = Disk(cost.get_mu1(),cost.get_mu1(), sqrt(r2));
-          if (type == 1 || type == 2){it->IntersectionD2(disk);}
-          
-          if (it->IsEmpty()){ it = list_geom.erase(it); --it;}
-          
-          else{
-            if (type == 2 || type == 3){
-              it->UpdateDisks(disk);//remove empty intersection
-              if (type == 2){
-                list_disks = it-> get_disks_t_1();
-                //nb_disk = list_disks.size();
-                //bool fl = false;
-                std::list<Disk>::iterator it_d;
-                it_d = list_disks.begin(); 
-               
-                while(it_d != list_disks.end()){
-                  Disk disk_d = *it_d;
-                  it->ExclusionD2(disk_d);
-                  if (it->IsEmpty()){
-                    it = list_geom.erase(it); --it;
-                    it_d = list_disks.end(); --it_d;
+          if (type >= 1){
+            Disk disk_inter = Disk(cost_inter.get_mu1(), cost_inter.get_mu2(), sqrt(r2_inter));
+            
+            it_list->IntersectionD2(disk_inter);
+            if ( it_list->IsEmpty()){ it_list = list_geom.erase(it_list);--it_list;}
+            else{ 
+              if (type >= 2){
+                std::list<Disk>::iterator it_disk;
+                
+                it_list-> UpdateDisks(disk_inter);//update disks remove 
+                
+                nb_disk = it_list->get_disks_t_1().size();
+                bool fl = false;
+                
+                if(type == 2){
+                  list_disk =  it_list->get_disks_t_1();
+                  it_disk = list_disk.begin(); 
+                  while(it_disk != list_disk.end()){
+                    Disk disk_dif = *it_disk;
+                    it_list->ExclusionD2(disk_dif);
+                    if(it_list->IsEmpty()){
+                      it_list = list_geom.erase(it_list);  --it_list;
+                      it_disk = list_disk.end(); --it_disk;
+                      fl = true;
+                    }
+                    ++it_disk;
                   }
-                  ++it_d;
-                } //if (fl == false){test_file << lbl << " "<<  nb_disk << " ";}
-              }
-            }  
-          }//else
+                }//if(type == 2)
+                if (fl == false){test_file << lbl << " "<<  nb_disk << " ";}
+              }//  if (type >= 2)
+            }//else
+          }//if (type >= 1)
         }//else
-        ++it;
-      }
-    }
-    //test_file.close();
+        ++it_list;
+      }//while (it_list != list_geom.end())
+      test_file << "\n";
+    }//for (unsigned int t = 0; t < n ; t++)
+    
+    test_file.close();
+    
     //result vectors
     unsigned int chp = n;
     while (chp > 0){
@@ -201,4 +217,5 @@ public:
   }
 };
 
-#endif //OP_H
+#endif //OP_H      
+    

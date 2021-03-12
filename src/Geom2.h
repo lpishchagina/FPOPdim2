@@ -37,7 +37,7 @@ public:
   bool IsEmpty();                                        //check for emptiness of an approximated set 
   void IntersectionD2(Disk disk);              //intersection approximation
   void ExclusionD2(Disk disk);                 //exclusion approximation
-  void UpdateDisks(Disk disk_t);
+  void UpdateDisks(Disk disk_dif);
 
 };
 
