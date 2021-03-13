@@ -19,23 +19,18 @@
 //-----------------------------------------------------------------------------------------------
 class Geom1{
 private:
-  unsigned int label_t;                                 //time moment 
-  Rect rect_t;                                          //approx rectangle
+  unsigned int label_t; //time moment 
+  Rect rect_t;          //approx rectangle
 public:
-  
   Geom1();
-  Geom1(unsigned int t, std::list<Disk> disks);
+  Geom1(unsigned int t);
  
   unsigned int get_label_t();
   Rect get_rect_t();
   std::list<Disk> get_disks_t_1();
   
-  bool IsEmpty(); 
-  void IntersectionD2(Disk disk); 
-  
-  void ExclusionD2(Disk disk){};
-  void UpdateDisks(Disk disk_t){};
-  
+  void InitialGeometry(std::list<Disk> disks);
+  void UpdateGeometry(Disk disk_t);
+  bool EmptyGeometry();
 };
-
 #endif //GEOM1_H

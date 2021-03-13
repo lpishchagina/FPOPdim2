@@ -58,7 +58,9 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
     res["globalCost"] = Y.get_globalCost();
   }
   if (type == 3){
+    Rcpp::Rcout << "type 3" << endl;
     OP<Geom3> Z = OP<Geom3>(data1, data2, penalty);
+    Rcpp::Rcout << "Geom3" << endl;
     Z.algoFPOP(data1, data2, type);   
     res["changepoints"] = Z.get_chpts();
     res["means1"] = Z.get_means1();
