@@ -87,10 +87,6 @@ public:
    
     //Algorithm-----------------------------------------------------------------
     for (unsigned int t = 0; t < n ; t++){
-      Rcpp::Rcout << "------------------------------------------------" << endl;
-      Rcpp::Rcout << "Moment t = " << endl;
-      Rcpp::Rcout << t << endl;
-      
       double min_val = INFINITY; //min value of cost
       double mean1;   //means for (lbl, t)
       double mean2;
@@ -134,7 +130,7 @@ public:
       last_chpt_mean[2][t] = mean2;     //vector of means (lbl,t) for y2
       //new min 
       m[t + 1] = min_val + penalty; 
-      Rcpp::Rcout << "min = " << endl;
+
       Rcpp::Rcout << m[t + 1] << endl;
       
       //Second run: Update list of geometry-------------------------------------
@@ -143,21 +139,16 @@ public:
         lbl = it_geom -> get_label_t();
         Cost cost_lblt = Cost(lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
         double r2 = (m[t + 1] - m[lbl] - cost_lblt.get_coef_Var())/cost_lblt.get_coef();
-        
-        Rcpp::Rcout << "r2 = " << endl;
-        Rcpp::Rcout << r2 << endl;
         //PELT
-        if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;Rcpp::Rcout << "PELT!!! Remove geom" << endl;}
+        if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;}
         //FPOP
         else{
           it_geom -> InitialGeometry(list_disk);
           Disk disk_lblt = Disk(cost_lblt.get_mu1(), cost_lblt.get_mu2(), sqrt(r2));
           it_geom -> UpdateGeometry(disk_lblt);
-          
-          Rcpp::Rcout << "Proverka na pustotu" << endl;
           Rcpp::Rcout << it_geom -> EmptyGeometry() << endl;
           
-          if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom; Rcpp::Rcout << "Remove Geom " << endl;}
+          if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;}
         }//else
         ++it_geom;
       }
