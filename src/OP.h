@@ -139,12 +139,12 @@ public:
         cost = Cost(lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
         double r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
         //PELT
-        if (r2 < 0){it_geom = list_geom.erase(it_geom); --it_geom; Rcpp::Rcout << "PELT!!!" << endl;}
+        if (r2 < 0){it_geom = list_geom.erase(it_geom); --it_geom;}
         //FPOP
         if (r2 > 0){
           Disk disk_lblt = Disk(cost.get_mu1(), cost.get_mu2(), sqrt(r2));
           it_geom -> UpdateGeometry(disk_lblt);
-          if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom; Rcpp::Rcout << "FPOP!!!" << endl;}
+          if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;}
         }//else
         ++it_geom;
       }
