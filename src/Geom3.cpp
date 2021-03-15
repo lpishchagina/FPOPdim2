@@ -22,7 +22,7 @@ Geom3::Geom3(unsigned  int t){
 }
 
 //------------------------------------------------------------------------------
-unsigned int Geom3::get_label_t(){return label_t;}
+int Geom3::get_label_t(){return label_t;}
 std::list<Disk> Geom3::get_disks_t_1(){return disks_t_1;}
 
 double Geom3::Dist(double a1, double a2, double b1, double b2){
@@ -30,52 +30,33 @@ double Geom3::Dist(double a1, double a2, double b1, double b2){
   return dist;
 }
 //------------------------------------------------------------------------------
-void Geom3::InitialGeometry(std::list<Disk> disks){disks_t_1 = disks;
-  Rcpp::Rcout << "Initial disks size = " << endl;Rcpp::Rcout << disks_t_1.size()<< endl;}
+void Geom3::InitialGeometry(std::list<Disk> disks){disks_t_1 = disks;}
 //------------------------------------------------------------------------------
 void Geom3::UpdateGeometry(Disk disk_t){
-  Rcpp::Rcout << "__________UpdateGeometry__________" << endl;
-  Rcpp::Rcout << "disks do: size = " << endl;Rcpp::Rcout << disks_t_1.size()<< endl;
   std::list<Disk>::iterator iter;
+  //Remove disks
   iter = disks_t_1.begin();
   while( iter != disks_t_1.end()){
     Disk disk = *iter;
     double dist = Dist(disk_t.get_center1(), disk_t.get_center2(), disk.get_center1(), disk.get_center2());
     
+    if (dist >= (disk.get_radius() + disk_t.get_radius())){ iter = disks_t_1.erase(iter);--iter;}
     
-    Rcpp::Rcout << "dist" << endl;
-    Rcpp::Rcout << dist << endl;
-    Rcpp::Rcout << "r+R" << endl;
-    Rcpp::Rcout << (disk.get_radius() + disk_t.get_radius()) << endl;
-    
-    if (dist >= (disk.get_radius() + disk_t.get_radius())){ iter = disks_t_1.erase(iter);--iter;
-    
-    Rcpp::Rcout << "Nugno Udalit disk t_1" << endl;
-    
-    }
     ++iter; 
   }
-  Rcpp::Rcout << "disks posle size = " << endl; Rcpp::Rcout << disks_t_1.size()<< endl;
-  
+  //Exclusion
   iter = disks_t_1.begin();
   while( iter != disks_t_1.end()){
     Disk disk = *iter;
     double dist;
     dist = Dist(disk_t.get_center1(), disk_t.get_center2(), disk.get_center1(), disk.get_center2());
-    Rcpp::Rcout << "dist excl" << endl;
-    Rcpp::Rcout << dist << endl;
-    Rcpp::Rcout << "R-r" << endl;
-    Rcpp::Rcout << (disk.get_radius() + disk_t.get_radius()) << endl;
-
-    
     if (dist <= (disk.get_radius() - disk_t.get_radius())){
-      Rcpp::Rcout << "vnutri,  FPOP!!! " << endl;
-      label_t = INFINITY;
+      label_t = -1;
       iter = disks_t_1.end();
     }
     else{++iter;}
   }
 } 
 //------------------------------------------------------------------------------
-bool Geom3::EmptyGeometry(){ if (label_t == INFINITY) {return true;} else {return false;}}
+bool Geom3::EmptyGeometry(){ if (label_t == -1) {return true;} else {return false;}}
 //------------------------------------------------------------------------------

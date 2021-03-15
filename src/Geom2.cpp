@@ -22,11 +22,13 @@ Geom2::Geom2(unsigned int t){
   disks_t_1.clear();
 }
 //------------------------------------------------------------------------------
-unsigned int Geom2::get_label_t(){return label_t;}
+int Geom2::get_label_t(){return label_t;}
 Rect Geom2::get_rect_t(){return rect_t;}
 std::list<Disk> Geom2::get_disks_t_1(){return disks_t_1;}
 //------------------------------------------------------------------------------
-void Geom2::InitialGeometry(std::list<Disk> disks){disks_t_1 = disks;}
+void Geom2::InitialGeometry(std::list<Disk> disks){
+  rect_t = Rect(-INFINITY, -INFINITY, INFINITY, INFINITY);
+  disks_t_1 = disks; }
 //------------------------------------------------------------------------------
 void Geom2::UpdateGeometry(Disk disk_t){
   //Intersection
@@ -47,6 +49,7 @@ void Geom2::UpdateGeometry(Disk disk_t){
     iter = disks_t_1.begin();
     while( iter != disks_t_1.end()){
       Disk disk = *iter;
+      
       rect_t.Exclusion_disk(disk);
       if(rect_t.IsEmpty_rect()){iter = disks_t_1.end();}
       else{ ++iter;}

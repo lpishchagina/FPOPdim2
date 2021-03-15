@@ -20,7 +20,7 @@
 //' @param data1 is a vector of data1(a univariate time series).                                
 //' @param data2 is a vector of data2(a univariate time series).                                
 //' @param penalty is a value of penalty (a non-negative real number).                                        
-//' @param type is a value defining the  type of pruning (0 = PELT, 1 = FPOP(intersection of sets), 2 = FPOP(intersection of set \ union of set ).       
+//' @param type is a value defining the  type of pruning (1 = FPOP(intersection of sets, approximation - rectangle); 2 = FPOP(intersection of set \ union of set, approximation - rectangle); 3 = FPOP(intersection of set \ union of set, approximation -last disk)).       
 //'                                                                                                          
 //' @return a list of 4 elements  = (changepoints, means1, means2, globalCost).                    
 //'  
@@ -37,11 +37,11 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
   //----------stop--------------------------------------------------------------
   if(data1.size() != data2.size()){throw std::range_error("data1 and data2 have different length");}
   if(penalty < 0) {throw std::range_error("penalty should be a non-negative number");}
-  if(type < 0 || type > 3)
-  {throw std::range_error("type must be one of: 0, 1,2 or 3");}
+  if(type < 1 || type > 3)
+  {throw std::range_error("type must be one of: 1,2 or 3");}
   //----------------------------------------------------------------------------
   List res;
-  if (type == 0 || type == 1){
+  if (type == 1){
     OP<Geom1> X = OP<Geom1>(data1, data2, penalty);
     X.algoFPOP(data1, data2, type);     
     res["changepoints"] = X.get_chpts();
@@ -58,9 +58,7 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
     res["globalCost"] = Y.get_globalCost();
   }
   if (type == 3){
-    Rcpp::Rcout << "type 3" << endl;
     OP<Geom3> Z = OP<Geom3>(data1, data2, penalty);
-    Rcpp::Rcout << "Geom3" << endl;
     Z.algoFPOP(data1, data2, type);   
     res["changepoints"] = Z.get_chpts();
     res["means1"] = Z.get_means1();

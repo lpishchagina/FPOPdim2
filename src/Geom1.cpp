@@ -20,10 +20,10 @@ Geom1::Geom1(unsigned  int t){
   rect_t = Rect();
 }
 //------------------------------------------------------------------------------
-unsigned int Geom1::get_label_t(){return label_t;}
+int Geom1::get_label_t(){return label_t;}
 Rect Geom1::get_rect_t(){return rect_t;}
 //------------------------------------------------------------------------------
-void Geom1::InitialGeometry(std::list<Disk> disks){}
+void Geom1::InitialGeometry(std::list<Disk> disks){ rect_t = Rect(-INFINITY, -INFINITY, INFINITY, INFINITY);}
 //------------------------------------------------------------------------------
 void Geom1::UpdateGeometry(Disk disk_t){rect_t.Intersection_disk(disk_t);}
 //------------------------------------------------------------------------------

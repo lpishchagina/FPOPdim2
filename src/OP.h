@@ -26,7 +26,7 @@ private:
   unsigned int n; //data length
   double** sx12;  // vector sum x1,x2, x1^2, x2^2
   
-  std::vector<unsigned int> chpts;    //changepoints vector 
+  std::vector<int> chpts;    //changepoints vector 
   std::vector<double> means1;         //means vector for y1
   std::vector<double> means2;         //means vector for y2        
   double globalCost;                  //value of global cost
@@ -52,7 +52,7 @@ public:
     m = NULL;
   }
   //----------------------------------------------------------------------------
-  std::vector< unsigned int > get_chpts() const {return chpts;}
+  std::vector< int > get_chpts() const {return chpts;}
   std::vector< double > get_means1() const{return means1;}
   std::vector< double > get_means2() const{return means2;}
   double get_globalCost() const {return globalCost;}
@@ -78,77 +78,73 @@ public:
     double** last_chpt_mean = new double*[3];// vectors of best last changepoints, mean1 and mean2
     for(unsigned int i = 0; i < 3; i++) {last_chpt_mean[i] = new double[n];}
     //open file
-   // unsigned int nb_disk;
-   // std::ofstream test_file;
+    // unsigned int nb_disk;
+    // std::ofstream test_file;
     //std::string d = std::to_string(n);
     //std::string ty = std::to_string(type);
-   // test_file.open("exclusion_t"+ty+"_d"+d+".txt");
-  // test_file.open("test.txt");
-   
+    // test_file.open("exclusion_t"+ty+"_d"+d+".txt");
+    // test_file.open("test.txt");
+    
     //Algorithm-----------------------------------------------------------------
     for (unsigned int t = 0; t < n ; t++){
-      double min_val = INFINITY; //min value of cost
-      double mean1;   //means for (lbl, t)
-      double mean2;
-      unsigned int lbl;         //best last position for t
+      
+      Cost cost = Cost(t, t, sx12[t], sx12[t+1], m[t]);
+      double min_val = cost.get_min(); //min value of cost
+      double mean1 =  cost.get_mu1();   //means for (lbl, t)
+      double mean2 = cost.get_mu2(); 
+      int lbl = t;         //best last position
       
       std::list<Disk> list_disk;//list of active disks(t-1)
       list_disk.clear();
-      
-      typename std::list<GeomX>::iterator it_geom;
-      
-      //push to list of geometry new geometry Dtt
-      geom = GeomX(t); 
-      list_geom.push_back(geom);
+     
+      typename std::list<GeomX>::reverse_iterator rit_geom;
       
       //First run: searching min------------------------------------------------
-      it_geom = list_geom.begin();
-      while(it_geom!= list_geom.end()){
-       
-        unsigned int u = it_geom -> get_label_t();
-        if (u != t){
-          //Initialization: list of active disks(t-1)
-          Cost cost_ut_1 = Cost(u, t-1, sx12[u], sx12[t], m[u]);
-          double r2 = (m[t] - m[u] - cost_ut_1.get_coef_Var())/cost_ut_1.get_coef();
-          Disk disk = Disk(cost_ut_1.get_mu1(),cost_ut_1.get_mu2(), sqrt(r2));
-          list_disk.push_back(disk);
-        }
+      rit_geom = list_geom.rbegin();
+      while(rit_geom!= list_geom.rend()){
+        int u = rit_geom -> get_label_t();
         // Searching: min
-        Cost cost_ut = Cost(u, t, sx12[u], sx12[t + 1], m[u]);
-        if( min_val > cost_ut.get_min()){
+        cost = Cost(u, t, sx12[u], sx12[t + 1], m[u]);
+        if( min_val >= cost.get_min()){
           lbl = u;
-          min_val = cost_ut.get_min();
-          mean1 = cost_ut.get_mu1();
-          mean2 = cost_ut.get_mu2();  
+          min_val = cost.get_min();
+          mean1 = cost.get_mu1();
+          mean2 = cost.get_mu2();  
         }
-        ++it_geom;
+        //list of active disks(t-1)
+        Cost cost_t_1 = Cost(u, t-1, sx12[u], sx12[t], m[u]);
+        double r2 = (m[t] - m[u] - cost_t_1.get_coef_Var())/cost_t_1.get_coef();
+        Disk disk = Disk(cost_t_1.get_mu1(),cost_t_1.get_mu2(), sqrt(r2));
+        list_disk.push_back(disk);
+        ++rit_geom;
       }
-
       //best last changepoints and means
       last_chpt_mean[0][t] = lbl;       //vector of best last chpt
       last_chpt_mean[1][t] = mean1;     //vector of means (lbl,t) for y1
       last_chpt_mean[2][t] = mean2;     //vector of means (lbl,t) for y2
       //new min 
       m[t + 1] = min_val + penalty; 
-
-      Rcpp::Rcout << m[t + 1] << endl;
+    
+      //Initialisation of geometry----------------------------------------------
+      geom = GeomX(t); 
+      if (m[t + 1] != m[t]) {geom.InitialGeometry(list_disk);}
+      //push to list of geometry new geometry Dtt
+      list_geom.push_back(geom);
       
       //Second run: Update list of geometry-------------------------------------
+      typename std::list<GeomX>::iterator it_geom;
       it_geom = list_geom.begin();      
       while (it_geom != list_geom.end()){
         lbl = it_geom -> get_label_t();
-        Cost cost_lblt = Cost(lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
-        double r2 = (m[t + 1] - m[lbl] - cost_lblt.get_coef_Var())/cost_lblt.get_coef();
+        cost = Cost(lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
+        double r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
         //PELT
-        if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;}
+        if (r2 < 0){it_geom = list_geom.erase(it_geom); --it_geom; Rcpp::Rcout << "PELT!!!" << endl;}
         //FPOP
-        else{
-          it_geom -> InitialGeometry(list_disk);
-          Disk disk_lblt = Disk(cost_lblt.get_mu1(), cost_lblt.get_mu2(), sqrt(r2));
+        if (r2 > 0){
+          Disk disk_lblt = Disk(cost.get_mu1(), cost.get_mu2(), sqrt(r2));
           it_geom -> UpdateGeometry(disk_lblt);
-          Rcpp::Rcout << it_geom -> EmptyGeometry() << endl;
-          
-          if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;}
+          if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom; Rcpp::Rcout << "FPOP!!!" << endl;}
         }//else
         ++it_geom;
       }

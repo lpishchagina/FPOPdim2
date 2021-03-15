@@ -20,7 +20,7 @@
 
 class Geom2{
 private:
-  unsigned int label_t;                                 //time moment 
+  int label_t;                                 //time moment 
   Rect rect_t;                                          //approx rectangle
   std::list<Disk> disks_t_1;                            //list of disks(t-1)
   
@@ -28,7 +28,7 @@ public:
   Geom2();
   Geom2(unsigned int t);
   
-  unsigned int get_label_t();
+  int get_label_t();
   Rect get_rect_t();
   std::list<Disk> get_disks_t_1();
 
