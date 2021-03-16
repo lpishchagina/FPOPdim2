@@ -71,7 +71,7 @@ one.simu.fpop  <- function(data1, data2, penalty, type, func = "FPOP2D")
 #         data length         #
 ###############################
    
-length.simu <- c(1000, 2000, 3000, 5000, 8000, 10000, 12000 15000, 18000, 20000)
+length.simu <- c(1000, 2000, 3000, 5000, 8000, 10000, 12000, 15000, 18000, 20000)
 nb.simu <- 10
 nb.iter <- length(length.simu)
 ###############################
@@ -87,10 +87,10 @@ tab.FPOP1 <- data.frame(matrix(0, nb.iter, nb.simu + 1))
 colnames(tab.FPOP1 ) <- c("n", paste0("Rep",1:nb.simu))
 
 tab.FPOP2 <- data.frame(matrix(0, nb.iter, nb.simu + 1))
-colnames(tab.FPOP1 ) <- c("n", paste0("Rep",1:nb.simu))
+colnames(tab.FPOP2 ) <- c("n", paste0("Rep",1:nb.simu))
 
 tab.FPOP3 <- data.frame(matrix(0, nb.iter, nb.simu + 1))
-colnames(tab.FPOP1 ) <- c("n", paste0("Rep",1:nb.simu))
+colnames(tab.FPOP3 ) <- c("n", paste0("Rep",1:nb.simu))
 ###############################
 #       tables filling        #
 ###############################
