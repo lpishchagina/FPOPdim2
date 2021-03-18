@@ -22,19 +22,15 @@ library(rstream)
 library(simEd)
 library(iterators)
 library(stats)
+library(parallel)
 
-library(foreach)
-library(doParallel)
 set.seed(21)
-
 ###############################
 #          Cluster            #
 ###############################
-cores = detectCores()
-cl <- makeCluster(cores[1]-1) #7
-registerDoParallel(cl)
-nb.simu <- 7
-
+nb.simu <-10
+cores <- detectCores()
+cores <- nb.simu 
 ###############################
 #     Function one.simu.op    #
 ###############################
@@ -74,8 +70,8 @@ one.simu.fpop  <- function(data, penalty, type, func = "FPOP2D")
 #         data length         #
 ###############################
 length.simu <-NULL
-nb.iter <- 2
-for (i in 1:nb.iter){length.simu <- c(length.simu, 10^(i+2))}
+nb.iter <- 5
+for (i in 1:nb.iter){length.simu <- c(length.simu, 10^(i+1))}
 ###############################
 #            tables           #
 ###############################
@@ -100,16 +96,12 @@ mu1 <- 0
 mu2 <- 0
 sigma <- 1
 res.nb.simu <- NULL
-
 ###############################
 #    tables filling FPOP2     #
 ###############################
-x = one.simu.fpop(data = data_gen2D(length.simu[2],length.simu[2],mu1,mu2,sigma), penalty, type = 2, func = "FPOP2D")
-x
-
 for(i in 1:length(length.simu)){
-  penalty <- 2*log(length.simu[i])
-  res.nb.simu <- foreach(i = 1:nb.simu, .combine = c, .packages=c("rstream","FPOPdim2")) %dopar% one.simu.fpop(data_gen2D(length.simu[i],length.simu[i],0,0,1), penalty, type = 2, func = "FPOP2D")
+  beta <- 2 * sigma * log(length.simu[i])
+  res.nb.simu <- mclapply(1:nb.simu, FUN = one.simu.fpop, data1 = data_gen2D(length.simu[i],length.simu[i], mu1, mu2, sigma), penalty = beta, type = 2, mc.cores = cores)
   tab.FPOP2[i,] <- c(length.simu[i], res.nb.simu) 
 }
 ###############################
@@ -129,11 +121,12 @@ dev.off()
 ###############################
 #    tables filling OP        #
 ###############################
+
+
+
 for(i in 1:length(length.simu)){
-  penalty <- 2*log(length.simu[i])
-  res.nb.simu <- foreach(i = 1:nb.simu, .combine = cbind) %dopar% {
-    one.simu.op(data = data_gen2D(length.simu[i],length.simu[i],mu1,mu2,sigma), penalty, type = "null", func = "OptPart2D")
-  }
+  beta <- 2 * sigma * log(length.simu[i])
+  res.nb.simu <- mclapply(1:nb.simu, FUN = one.simu.op, data1 = data_gen2D(length.simu[i],length.simu[i], mu1, mu2, sigma), penalty = beta, type = "null", mc.cores = cores)
   tab.OP[i,] <- c(length.simu[i], res.nb.simu) 
 }
 
@@ -154,13 +147,13 @@ dev.off()
 ###############################
 #    tables filling PELT      #
 ###############################
+
 for(i in 1:length(length.simu)){
-  penalty <- 2*log(length.simu[i])
-  res.nb.simu <- foreach(i = 1:nb.simu, .combine = cbind) %dopar% {
-    one.simu.op(data = data_gen2D(length.simu[i],length.simu[i],mu1,mu2,sigma), penalty, type = "pruning", func = "OptPart2D")
-  }
+  beta <- 2 * sigma * log(length.simu[i])
+  res.nb.simu <- mclapply(1:nb.simu, FUN = one.simu.op, data1 = data_gen2D(length.simu[i],length.simu[i], mu1, mu2, sigma), penalty = beta, type = "pruning", mc.cores = cores)
   tab.PELT[i,] <- c(length.simu[i], res.nb.simu) 
 }
+
 ###############################
 #    time complexity PELT     #
 ###############################
@@ -182,10 +175,8 @@ dev.off()
 #    tables filling FPOP3     #
 ###############################
 for(i in 1:length(length.simu)){
-  penalty <- 2*log(length.simu[i])
-  res.nb.simu <- foreach(i = 1:nb.simu, .combine = cbind) %dopar% {
-    one.simu.fpop(data = data_gen2D(length.simu[i],length.simu[i],mu1,mu2,sigma), penalty, type = 3, func = "FPOP2D")
-  }
+  beta <- 2 * sigma * log(length.simu[i])
+  res.nb.simu <- mclapply(1:nb.simu, FUN = one.simu.fpop, data1 = data_gen2D(length.simu[i],length.simu[i], mu1, mu2, sigma), penalty = beta, type = 3, mc.cores = cores)
   tab.FPOP3[i,] <- c(length.simu[i], res.nb.simu) 
 }
 ###############################
@@ -206,10 +197,8 @@ dev.off()
 #    tables filling FPOP1     #
 ###############################
 for(i in 1:length(length.simu)){
-  penalty <- 2*log(length.simu[i])
-  res.nb.simu <- foreach(i = 1:nb.simu, .combine = cbind) %dopar% {
-    one.simu.fpop(data = data_gen2D(length.simu[i],length.simu[i],mu1,mu2,sigma), penalty, type = 1, func = "FPOP2D")
-  }
+  beta <- 2 * sigma * log(length.simu[i])
+  res.nb.simu <- mclapply(1:nb.simu, FUN = one.simu.fpop, data1 = data_gen2D(length.simu[i],length.simu[i], mu1, mu2, sigma), penalty = beta, type = 1, mc.cores = cores)
   tab.FPOP1[i,] <- c(length.simu[i], res.nb.simu) 
 }
 
@@ -265,4 +254,4 @@ dev.off()
 ###############################
 
 #stop cluster
-stopCluster(cl)
+stopCluster(cores)
