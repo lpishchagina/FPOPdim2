@@ -9,25 +9,19 @@
 ###############################
 #    package installation     #
 ###############################
-devtools::install_github("lpishchagina/FPOPdim2")
+#devtools::install_github("lpishchagina/FPOPdim2")
 
 library(FPOPdim2)
 
-devtools::install_github("lpishchagina/OptPartitioning2D")
+#devtools::install_github("lpishchagina/OptPartitioning2D")
 
 library(OptPartitioning2D)
 
+library(base)
+library(rstream)
 library(simEd)
-
-library(microbenchmark)
-
-library("ggplot2")
-
-library(foreach)
-
 library(iterators)
 library(parallel)
-library(base)
 
 ###############################
 #     Function one.simu.op    #
@@ -67,22 +61,22 @@ one.simu.fpop  <- function(data1, data2, penalty, type, func = "FPOP2D")
 #         data length         #
 ###############################
 length.simu <-NULL
-nb.iter <-4
-for (i in 1:nb.iter){length.simu <- c(length.simu, 10^(i+2))}
+nb.iter <-5
+for (i in 1:nb.iter){length.simu <- c(length.simu, 10^(i+1))}
 nb.simu <- 10
 #nb.iter<- length(length.simu)
 ###############################
 #            tables           #
 ###############################
 tab.OP <- data.frame(matrix(0, nb.iter, nb.simu + 1))
-colnames(tab.OP ) <- c("n", paste0("Rep",1:nb.simu))
+colnames(tab.OP) <- c("n", paste0("Rep",1:nb.simu))
 
 ###############################
 #       tables filling        #
 ###############################
 mu1 <- 0
 mu2 <- 0
-sigma <- 0.3
+sigma <- 1
 ###############################
 #          Cluster            #
 ###############################
@@ -105,7 +99,7 @@ for(i in 1:length(length.simu)){
 #    time complexity OP       #
 ###############################
 mean.OP <- rowMeans(tab.OP[,-1])
-write.table(tab.OP, "Table Time complexity OP 1000-1000000.txt" )
+write.table(tab.OP, "Table Time complexity OP 10.txt" )
 write.table(mean.OP, "Time complexity OP 1000-1000000.txt" )
 ###############################
 #  Plot:time complexity OP    #

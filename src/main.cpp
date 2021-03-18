@@ -41,25 +41,30 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
   {throw std::range_error("type must be one of: 1,2 or 3");}
   //----------------------------------------------------------------------------
   List res;
+  bool test;
+  test = false;
   if (type == 1){
     OP<Geom1> X = OP<Geom1>(data1, data2, penalty);
-    X.algoFPOP(data1, data2, type);     
+    
+    X.algoFPOP(data1, data2, type, test);     
     res["changepoints"] = X.get_chpts();
     res["means1"] = X.get_means1();
     res["means2"] = X.get_means2();
     res["globalCost"] = X.get_globalCost();
   }
   if (type == 2){
+    //test = true;//
     OP<Geom2> Y = OP<Geom2>(data1, data2, penalty);
-    Y.algoFPOP(data1, data2, type);   
+    Y.algoFPOP(data1, data2, type, test);   
     res["changepoints"] = Y.get_chpts();
     res["means1"] = Y.get_means1();
     res["means2"] = Y.get_means2();
     res["globalCost"] = Y.get_globalCost();
   }
   if (type == 3){
+    //test = true;//
     OP<Geom3> Z = OP<Geom3>(data1, data2, penalty);
-    Z.algoFPOP(data1, data2, type);   
+    Z.algoFPOP(data1, data2, type, test);   
     res["changepoints"] = Z.get_chpts();
     res["means1"] = Z.get_means1();
     res["means2"] = Z.get_means2();

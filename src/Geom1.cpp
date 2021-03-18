@@ -22,8 +22,13 @@ Geom1::Geom1(unsigned  int t){
 //------------------------------------------------------------------------------
 int Geom1::get_label_t(){return label_t;}
 Rect Geom1::get_rect_t(){return rect_t;}
+std::list<Disk> Geom1::get_disks_t_1(){
+  std::list<Disk> list_NULL;
+  list_NULL.clear();
+  return list_NULL;
+  }
 //------------------------------------------------------------------------------
-void Geom1::InitialGeometry(std::list<Disk> disks){ rect_t = Rect(-INFINITY, -INFINITY, INFINITY, INFINITY);}
+void Geom1::InitialGeometry(std::list<Disk> disks){ rect_t = Rect();}
 //------------------------------------------------------------------------------
 void Geom1::UpdateGeometry(Disk disk_t){rect_t.Intersection_disk(disk_t);}
 //------------------------------------------------------------------------------

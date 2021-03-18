@@ -37,8 +37,8 @@ public:
   OP<GeomX>(){};
   //----------------------------------------------------------------------------
   OP<GeomX> (std::vector<double>& x1, std::vector<double>& x2, double beta){
-    penalty = beta;
     n = x1.size();
+    penalty = beta;
     sx12 = new double*[n+1]; 
     for(unsigned int i = 0; i < n + 1; i++) {sx12[i] = new double[4];}
     m = new double[n + 1];        // "globalCost" = m[n+1] - changepoints.size()*penalty
@@ -57,6 +57,7 @@ public:
   std::vector< double > get_means2() const{return means2;}
   double get_globalCost() const {return globalCost;}
   unsigned int get_n() const {return n;}
+  double get_penalty() const {return penalty;}
   //----------------------------------------------------------------------------
   double** vect_sx12(std::vector<double>& x1, std::vector<double>& x2) {
     unsigned int n = x1.size();
@@ -70,24 +71,22 @@ public:
     return(sx12);
   }
   //----------------------------------------------------------------------------
-  void algoFPOP(std::vector<double>& x1, std::vector<double>& x2, int type){
+  void algoFPOP(std::vector<double>& x1, std::vector<double>& x2, int type, bool test_mode){
     //preprocessing-------------------------------------------------------------
     n = x1.size();
-    sx12 = vect_sx12(x1, x2);           
+    sx12 = vect_sx12(x1, x2); 
+    penalty = get_penalty();
     m[0] = 0;
     double** last_chpt_mean = new double*[3];// vectors of best last changepoints, mean1 and mean2
     for(unsigned int i = 0; i < 3; i++) {last_chpt_mean[i] = new double[n];}
-    //open file
-    // unsigned int nb_disk;
-    // std::ofstream test_file;
-    //std::string d = std::to_string(n);
-    //std::string ty = std::to_string(type);
-    // test_file.open("exclusion_t"+ty+"_d"+d+".txt");
-    // test_file.open("test.txt");
+    
+    std::ofstream test_file;
+    
+   
+    if (test_mode == true){test_file.open("test.txt");}
     
     //Algorithm-----------------------------------------------------------------
     for (unsigned int t = 0; t < n ; t++){
-      
       Cost cost = Cost(t, t, sx12[t], sx12[t+1], m[t]);
       double min_val = cost.get_min(); //min value of cost
       double mean1 =  cost.get_mu1();   //means for (lbl, t)
@@ -123,11 +122,12 @@ public:
       last_chpt_mean[1][t] = mean1;     //vector of means (lbl,t) for y1
       last_chpt_mean[2][t] = mean2;     //vector of means (lbl,t) for y2
       //new min 
+      
       m[t + 1] = min_val + penalty; 
-    
+     
       //Initialisation of geometry----------------------------------------------
       geom = GeomX(t); 
-      if (m[t + 1] != m[t]) {geom.InitialGeometry(list_disk);}
+      geom.InitialGeometry(list_disk);
       //push to list of geometry new geometry Dtt
       list_geom.push_back(geom);
       
@@ -139,16 +139,19 @@ public:
         cost = Cost(lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
         double r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
         //PELT
-        if (r2 < 0){it_geom = list_geom.erase(it_geom); --it_geom;}
+        if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;}
         //FPOP
         if (r2 > 0){
           Disk disk_lblt = Disk(cost.get_mu1(), cost.get_mu2(), sqrt(r2));
           it_geom -> UpdateGeometry(disk_lblt);
           if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;}
+          else {if (test_mode == true && (type == 2 || type == 3)){ test_file << it_geom ->get_label_t() << " "<< it_geom ->get_disks_t_1().size() << " ";}}
         }//else
         ++it_geom;
       }
+      if (test_mode == true){test_file << "\n";} 
     }
+    if (test_mode == true){test_file.close();}
     //Result vectors------------------------------------------------------------
     unsigned int chp = n;
     while (chp > 0){
@@ -161,7 +164,7 @@ public:
     reverse(means1.begin(), means1.end());
     reverse(means2.begin(), means2.end());
     
-    globalCost = m[n + 1] - penalty * chpts.size() ;
+    globalCost = m[n + 1] - penalty * chpts.size();
     //memory--------------------------------------------------------------------
     for(unsigned int i = 0; i < 3; i++) {delete(last_chpt_mean[i]);}
     delete [] last_chpt_mean;

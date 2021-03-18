@@ -9,10 +9,10 @@ using namespace Rcpp;
 using namespace std;
 
 Rect::Rect(){
-  rectx0 = 0;    
-  recty0 = 0;
-  rectx1 = 0;
-  recty1 = 0;
+  rectx0 = -INFINITY;    
+  recty0 = -INFINITY;
+  rectx1 = INFINITY;
+  recty1 = INFINITY;
 }
 
 Rect::Rect(double x0, double y0, double x1, double y1){

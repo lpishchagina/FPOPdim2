@@ -2,6 +2,8 @@
 #include "Rect.h"
 #include "Geom2.h"
 
+#include <stdio.h>
+#include <fstream>
 #include <iostream>
 #include <math.h>
 //#include <list>
@@ -54,6 +56,13 @@ void Geom2::UpdateGeometry(Disk disk_t){
       if(rect_t.IsEmpty_rect()){iter = disks_t_1.end();}
       else{ ++iter;}
     }
+    
+   /* if(rect_t.IsEmpty_rect() == false) {
+      std::ofstream test_file;
+      test_file.open("test.txt", std::ios::app);
+      test_file << label_t << " "<<  disks_t_1.size() << " ";
+    }
+   */ 
   }
 }
 //------------------------------------------------------------------------------
