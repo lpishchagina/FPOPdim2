@@ -121,9 +121,9 @@ write.table(mean.FPOP2, "Time complexity FPOP2 par.txt", row.names = FALSE,col.n
 ###############################
 #  Plot:time complexity FPOP2 #
 ###############################
-png(filename = "Plot log Time complexity FPOP2 par.png",  width = 1500, height = 1000)
-plot(log(length.simu), mean.FPOP2, xlab = "log(data length)", ylab = "Mean time in second",  main = "FPOP2:Time complexity", col = "royalblue3")
-lines(log(length.simu), mean.FPOP2, col="royalblue3", lwd = 3)
+png(filename = "Plot log10 Time complexity FPOP2 par.png",  width = 1500, height = 1000)
+plot(log10(length.simu), mean.FPOP2, xlab = "log10(data length)", ylab = "Mean time in second",  main = "FPOP2:Time complexity", col = "royalblue3")
+lines(log10(length.simu), mean.FPOP2, col="royalblue3", lwd = 3)
 dev.off()
 
 ###############################
@@ -146,9 +146,9 @@ write.table(mean.OP, "Time complexity OP par.txt",  row.names = FALSE,col.names 
 ###############################
 #  Plot:time complexity OP    #
 ###############################
-png(filename = "Plot log Time complexity OP par.png",  width = 1500, height = 1000)
-plot(log(length.simu), mean.OP, xlab = "log(data length)", ylab = "Mean time in second",  main = "OP: Time complexity", col = "palevioletred3")
-lines(log(length.simu), mean.OP, col = "palevioletred3",lwd = 3)
+png(filename = "Plot log10 Time complexity OP par.png",  width = 1500, height = 1000)
+plot(log10(length.simu), mean.OP, xlab = "log10(data length)", ylab = "Mean time in second",  main = "OP: Time complexity", col = "palevioletred3")
+lines(log10(length.simu), mean.OP, col = "palevioletred3",lwd = 3)
 dev.off()
 
 ###############################
@@ -172,9 +172,9 @@ write.table(mean.PELT, "Time complexity PELT par.txt", row.names = FALSE,col.nam
 ###############################
 
 
-png(filename = "Plot log Time complexity PELT par.png",  width = 1500, height = 1000)
-plot(log(length.simu), mean.PELT, xlab = "log(data length)", ylab = "Mean time in second",  main = "PELT: Time complexity", col = "orchid3")
-lines(log(length.simu), mean.PELT, col="orchid3", lwd = 3)
+png(filename = "Plot log10 Time complexity PELT par.png",  width = 1500, height = 1000)
+plot(log10(length.simu), mean.PELT, xlab = "log10(data length)", ylab = "Mean time in second",  main = "PELT: Time complexity", col = "orchid3")
+lines(log10(length.simu), mean.PELT, col="orchid3", lwd = 3)
 dev.off()
 
 
@@ -197,9 +197,9 @@ write.table(mean.FPOP3, "Time complexity FPOP3 par.txt", row.names = FALSE,col.n
 ###############################
 #  Plot:time complexity FPOP3 #
 ###############################
-png(filename = "Plot log Time complexity FPOP3 par.png",  width = 1500, height = 1000)
-plot(log(length.simu), mean.FPOP3, xlab = "log(data length)", ylab = "Mean time in second",  main = "FPOP3: Time complexity", col = "purple3")
-lines(log(length.simu), mean.FPOP3, col="purple3", lwd = 3)
+png(filename = "Plot log10 Time complexity FPOP3 par.png",  width = 1500, height = 1000)
+plot(log10(length.simu), mean.FPOP3, xlab = "log10(data length)", ylab = "Mean time in second",  main = "FPOP3: Time complexity", col = "purple3")
+lines(log10(length.simu), mean.FPOP3, col="purple3", lwd = 3)
 dev.off()
 
 ###############################
@@ -222,32 +222,32 @@ write.table(mean.FPOP1, "Time complexity FPOP1 par.txt", row.names = FALSE, col.
 ###############################
 #  Plot:time complexity FPOP1 #
 ###############################
-png(filename = "Plot log Time complexity FPOP1 par.png",  width = 1500, height = 1000)
-plot(log(length.simu), mean.FPOP1, xlab = "log(data length)", ylab = "Mean time in second",  main = "FPOP1: Time complexity", col = "skyblue3")
-lines(log(length.simu), mean.FPOP1, col="skyblue3", lwd = 3)
+png(filename = "Plot log10 Time complexity FPOP1 par.png",  width = 1500, height = 1000)
+plot(log10(length.simu), mean.FPOP1, xlab = "log10(data length)", ylab = "Mean time in second",  main = "FPOP1: Time complexity", col = "skyblue3")
+lines(log10(length.simu), mean.FPOP1, col="skyblue3", lwd = 3)
 dev.off()
 
 ###############################
 #  Plot:time complexity       #
 ###############################
-png(filename = "Plot log Time complexity Comparison par.png",  width = 1500, height = 1000)
+png(filename = "Plot log10 Time complexity Comparison par.png",  width = 1500, height = 1000)
 
-plot(log(length.simu), mean.FPOP1, col = "skyblue3",, xlab = "log(data length)", ylab = "Mean time in second",  main = "Time complexity")
-lines(log(length.simu), mean.FPOP1, col="skyblue3", lwd = 3)
-
-
-points(log(length.simu), mean.FPOP3, col = "purple3" )
-lines(log(length.simu), mean.FPOP3, col="purple3", lwd = 3)
-
-points(log(length.simu), mean.OP, col = "palevioletred3")
-lines(log(length.simu), mean.OP, col="palevioletred3", lwd = 3)
-
-points(log(length.simu), mean.PELT,col = "orchid3")
-lines(log(length.simu), mean.PELT, col= "orchid3", lwd = 3)
+plot(log10(length.simu), mean.FPOP1, col = "skyblue3",, xlab = "log10(data length)", ylab = "Mean time in second",  main = "Time complexity")
+lines(log10(length.simu), mean.FPOP1, col="skyblue3", lwd = 3)
 
 
-points(log(length.simu), mean.FPOP2, col = "royalblue3")
-lines(log(length.simu), mean.FPOP2, col="royalblue3", lwd = 3)
+points(log10(length.simu), mean.FPOP3, col = "purple3" )
+lines(log10(length.simu), mean.FPOP3, col="purple3", lwd = 3)
+
+points(log10(length.simu), mean.OP, col = "palevioletred3")
+lines(log10(length.simu), mean.OP, col="palevioletred3", lwd = 3)
+
+points(log10(length.simu), mean.PELT,col = "orchid3")
+lines(log10(length.simu), mean.PELT, col= "orchid3", lwd = 3)
+
+
+points(log10(length.simu), mean.FPOP2, col = "royalblue3")
+lines(log10(length.simu), mean.FPOP2, col="royalblue3", lwd = 3)
 
 
 ############################### 
