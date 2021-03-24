@@ -26,7 +26,7 @@ private:
   unsigned int n; //data length
   double** sx12;  // vector sum x1,x2, x1^2, x2^2
   
-  std::vector<int> chpts;    //changepoints vector 
+  std::vector< unsigned int> chpts;    //changepoints vector 
   std::vector<double> means1;         //means vector for y1
   std::vector<double> means2;         //means vector for y2        
   double globalCost;                  //value of global cost
@@ -52,7 +52,7 @@ public:
     m = NULL;
   }
   //----------------------------------------------------------------------------
-  std::vector< int > get_chpts() const {return chpts;}
+  std::vector< unsigned int > get_chpts() const {return chpts;}
   std::vector< double > get_means1() const{return means1;}
   std::vector< double > get_means2() const{return means2;}
   double get_globalCost() const {return globalCost;}
@@ -73,16 +73,14 @@ public:
   //----------------------------------------------------------------------------
   void algoFPOP(std::vector<double>& x1, std::vector<double>& x2, int type, bool test_mode){
     //preprocessing-------------------------------------------------------------
-    n = x1.size();
+   // n = x1.size();
     sx12 = vect_sx12(x1, x2); 
-    penalty = get_penalty();
+   // penalty = get_penalty();
     m[0] = 0;
     double** last_chpt_mean = new double*[3];// vectors of best last changepoints, mean1 and mean2
     for(unsigned int i = 0; i < 3; i++) {last_chpt_mean[i] = new double[n];}
     
     std::ofstream test_file;
-    
-   
     if (test_mode == true){test_file.open("test.txt");}
     
     //Algorithm-----------------------------------------------------------------
@@ -91,17 +89,16 @@ public:
       double min_val = cost.get_min(); //min value of cost
       double mean1 =  cost.get_mu1();   //means for (lbl, t)
       double mean2 = cost.get_mu2(); 
-      int lbl = t;         //best last position
+      unsigned int lbl = t;         //best last position
       
       std::list<Disk> list_disk;//list of active disks(t-1)
       list_disk.clear();
      
-      typename std::list<GeomX>::reverse_iterator rit_geom;
-      
       //First run: searching min------------------------------------------------
+      typename std::list<GeomX>::reverse_iterator rit_geom;
       rit_geom = list_geom.rbegin();
       while(rit_geom!= list_geom.rend()){
-        int u = rit_geom -> get_label_t();
+        unsigned int u = rit_geom -> get_label_t();
         // Searching: min
         cost = Cost(u, t, sx12[u], sx12[t + 1], m[u]);
         if( min_val >= cost.get_min()){

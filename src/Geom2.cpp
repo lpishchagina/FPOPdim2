@@ -24,7 +24,7 @@ Geom2::Geom2(unsigned int t){
   disks_t_1.clear();
 }
 //------------------------------------------------------------------------------
-int Geom2::get_label_t(){return label_t;}
+unsigned int Geom2::get_label_t(){return label_t;}
 Rect Geom2::get_rect_t(){return rect_t;}
 std::list<Disk> Geom2::get_disks_t_1(){return disks_t_1;}
 //------------------------------------------------------------------------------
@@ -56,13 +56,6 @@ void Geom2::UpdateGeometry(Disk disk_t){
       if(rect_t.IsEmpty_rect()){iter = disks_t_1.end();}
       else{ ++iter;}
     }
-    
-   /* if(rect_t.IsEmpty_rect() == false) {
-      std::ofstream test_file;
-      test_file.open("test.txt", std::ios::app);
-      test_file << label_t << " "<<  disks_t_1.size() << " ";
-    }
-   */ 
   }
 }
 //------------------------------------------------------------------------------

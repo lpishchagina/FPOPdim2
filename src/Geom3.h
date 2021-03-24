@@ -20,14 +20,15 @@
 //------------------------------------------------------------------------------
 class Geom3{
 private:
-  int label_t;       //time moment 
+  unsigned int label_t;       //time moment 
   std::list<Disk> disks_t_1;  //list of disks(t-1)
+  bool fl_empty;
   
 public:
   Geom3();
   Geom3(unsigned int t);
   
-  int get_label_t();
+  unsigned int get_label_t();
   std::list<Disk> get_disks_t_1();
   
   double Dist(double a1, double a2, double b1, double b2);

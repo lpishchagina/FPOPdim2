@@ -20,7 +20,7 @@ Geom1::Geom1(unsigned  int t){
   rect_t = Rect();
 }
 //------------------------------------------------------------------------------
-int Geom1::get_label_t(){return label_t;}
+unsigned int Geom1::get_label_t(){return label_t;}
 Rect Geom1::get_rect_t(){return rect_t;}
 std::list<Disk> Geom1::get_disks_t_1(){
   std::list<Disk> list_NULL;
