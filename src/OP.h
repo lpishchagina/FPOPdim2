@@ -19,6 +19,29 @@
 using namespace Rcpp;
 using namespace std;
 
+/*
+ Class OP
+ -------------------------------------------------------------------------------
+ Description: 
+ Template for the realization of FPOP-Algorithm in 2-dimension. 
+ 
+ Parameters:
+ "n" - data length;
+ "penalty" - value of penalty;
+ 
+ "sx12" - matrix(n+1x2*p) of sum:x1:xp, x1^2:xp^2;
+ 
+ "chpts" - vector of changepoints;
+ "means1" - means of changepoints for the first time series; 
+ "means2" - means of changepoints for the second time series;  
+ "globalCost" - value of global cost.
+ 
+ "m" - globalCost = m[n+1] - chpts.size()*penalty
+ "geom" - geometry
+ "list_geom" - list of geometry
+ --------------------------------------------------------------------------------
+ */
+
 template <class GeomX>
 class OP{
 private:
@@ -73,9 +96,9 @@ public:
   //----------------------------------------------------------------------------
   void algoFPOP(std::vector<double>& x1, std::vector<double>& x2, int type, bool test_mode){
     //preprocessing-------------------------------------------------------------
-   // n = x1.size();
+    // n = x1.size();
     sx12 = vect_sx12(x1, x2); 
-   // penalty = get_penalty();
+    // penalty = get_penalty();
     m[0] = 0;
     double** last_chpt_mean = new double*[3];// vectors of best last changepoints, mean1 and mean2
     for(unsigned int i = 0; i < 3; i++) {last_chpt_mean[i] = new double[n];}
@@ -93,7 +116,7 @@ public:
       
       std::list<Disk> list_disk;//list of active disks(t-1)
       list_disk.clear();
-     
+      
       //First run: searching min------------------------------------------------
       typename std::list<GeomX>::reverse_iterator rit_geom;
       rit_geom = list_geom.rbegin();
@@ -121,11 +144,10 @@ public:
       //new min 
       
       m[t + 1] = min_val + penalty; 
-     
+      
       //Initialisation of geometry----------------------------------------------
       geom = GeomX(t); 
       geom.InitialGeometry(list_disk);
-      //push to list of geometry new geometry Dtt
       list_geom.push_back(geom);
       
       //Second run: Update list of geometry-------------------------------------
@@ -169,6 +191,7 @@ public:
   }
   //----------------------------------------------------------------------------
 };
+
 
 #endif //OP_H      
     

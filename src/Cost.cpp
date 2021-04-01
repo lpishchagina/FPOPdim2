@@ -8,7 +8,7 @@ using namespace std;
 
 using namespace Rcpp;
 
-//##############################constructor#####################################//
+//constructor*******************************************************************
 Cost::Cost(unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen){
   coef = t - i + 1;
   mu1 = (st[0] - si_1[0])/(t - i + 1);
@@ -17,18 +17,20 @@ Cost::Cost(unsigned int i, unsigned int t, double* si_1, double* st, double mi_1
   mi_1_p = mi_1pen;
 }
 
-//##############################accessory#######################################//
+//accessory*********************************************************************
 unsigned int Cost::get_coef() const{return coef;}
+
 double Cost::get_coef_Var() const{return coef_Var;}
+
 double Cost::get_mi_1_p() const{return mi_1_p;}
+
 double Cost::get_mu1(){return mu1;}
+
 double Cost::get_mu2(){return mu2;}
 
-
-//#################################get_min######################################//
 double Cost::get_min(){ return(coef_Var + mi_1_p);}// q_it is a paraboloid => min{q_it} = coef_Var + mi_1_p
 
-//##################################End#########################################//
+//******************************************************************************
 
 
 

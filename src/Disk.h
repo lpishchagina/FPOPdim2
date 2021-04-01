@@ -2,19 +2,26 @@
 #define DISK_H
 
 #include <vector>
-
-
-//Class Disk
-//-----------------------------------------------------------------------------
+/*
+ Class Disk
+ -------------------------------------------------------------------------------
+ Description: 
+ Disk in 2-dimension. 
+ 
+ Parameters:
+ "(center1, center2)"  - the disk  center coordinates;
+ "radius" - the value of the disk radius.
+ -------------------------------------------------------------------------------
+ */
 class Disk{
 private:
-  double center1;                           // coordinates of center
+  double center1;                           
   double center2;  
-  double radius;                                        // radius
+  double radius;                                     
 
 public:
-  Disk();
-  Disk(double c1, double c2, double r);
+  Disk(){};
+  Disk(double c1, double c2, double r):center1(c1), center2(c2), radius(r){}  
 
   double get_radius();
   double get_center1();
@@ -22,3 +29,4 @@ public:
 }; 
 
 #endif //DISK_H
+//------------------------------------------------------------------------------

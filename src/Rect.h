@@ -7,18 +7,27 @@
 #include <vector>
 
 
-// Class Rect
-//------------------------------------------------------------------------------
+/*
+ Class Rect
+ -------------------------------------------------------------------------------
+ Description: 
+ Rectangle in 2-dimension. 
+ 
+ Parameters:
+ "(rectx0,recty0)" - the coordinates of the bottom left vertex;
+ "(rectx1,recty1)" - the coordinates of the top right vertex.
+ -------------------------------------------------------------------------------
+ */
 class Rect{
 private:
-  double rectx0;                        // coordinates of the bottom left vertex 
+  double rectx0;                     
   double recty0;
-  double rectx1;                        // coordinates of the top right vertex
+  double rectx1;                      
   double recty1;
 public:
   
-  Rect();
-  Rect(double x0, double y0, double x1, double y1);
+  Rect():rectx0(-INFINITY), recty0(-INFINITY), rectx1(INFINITY), recty1(INFINITY){}
+  Rect(double x0, double y0, double x1, double y1):rectx0(x0), recty0(y0), rectx1(x1), recty1(y1){}
 
   double get_rectx0();
   double get_recty0();

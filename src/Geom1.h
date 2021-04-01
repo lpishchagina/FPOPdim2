@@ -22,8 +22,8 @@ private:
   unsigned int label_t; //time moment 
   Rect rect_t;          //approx rectangle
 public:
-  Geom1();
-  Geom1(unsigned int t);
+  Geom1():label_t (0), rect_t(Rect()){}
+  Geom1(unsigned int t):label_t(t), rect_t(Rect()){}
  
   unsigned int get_label_t();
   Rect get_rect_t();

@@ -8,12 +8,12 @@
 #' @param data1 is a vector of data1(a univariate time series).                                
 #' @param data2 is a vector of data2(a univariate time series).                                
 #' @param penalty is a value of penalty (a non-negative real number).                                        
-#' @param type is a value defining the  type of pruning (1 = FPOP(intersection of sets, approximation - rectangle); 2 = FPOP(intersection of set \ union of set, approximation - rectangle); 3 = FPOP(intersection of set \ union of set, approximation -last disk)).       
+#' @param type is a value defining the  type of geometry for FPOP-pruning: type=1: ("intersection" of sets), approximation - rectangle; type=2:("intersection" of sets)"minus"("union" of sets), approximation - rectangle; type=3: (last disk)"minus"("union" of sets), approximation - disk.       
 #'                                                                                                          
-#' @return a list of 4 elements  = (changepoints, means1, means2, globalCost).                    
+#' @return a list of 4 elements  = (chpts, means1, means2, globalCost).                    
 #'  
 #' \describe{
-#' \item{\code{changepoints}}{is the vector of changepoints.}
+#' \item{\code{chpts}}{is the vector of changepoints.}
 #' \item{\code{means1}}{is the vector of successive means for data1.}
 #' \item{\code{means2}}{is the vector of successive means for data2.}
 #' \item{\code{globalCost}}{is a number equal to the global cost.}

@@ -20,12 +20,12 @@
 //' @param data1 is a vector of data1(a univariate time series).                                
 //' @param data2 is a vector of data2(a univariate time series).                                
 //' @param penalty is a value of penalty (a non-negative real number).                                        
-//' @param type is a value defining the  type of pruning (1 = FPOP(intersection of sets, approximation - rectangle); 2 = FPOP(intersection of set \ union of set, approximation - rectangle); 3 = FPOP(intersection of set \ union of set, approximation -last disk)).       
+//' @param type is a value defining the  type of geometry for FPOP-pruning: type=1: ("intersection" of sets), approximation - rectangle; type=2:("intersection" of sets)"minus"("union" of sets), approximation - rectangle; type=3: (last disk)"minus"("union" of sets), approximation - disk.       
 //'                                                                                                          
-//' @return a list of 4 elements  = (changepoints, means1, means2, globalCost).                    
+//' @return a list of 4 elements  = (chpts, means1, means2, globalCost).                    
 //'  
 //' \describe{
-//' \item{\code{changepoints}}{is the vector of changepoints.}
+//' \item{\code{chpts}}{is the vector of changepoints.}
 //' \item{\code{means1}}{is the vector of successive means for data1.}
 //' \item{\code{means2}}{is the vector of successive means for data2.}
 //' \item{\code{globalCost}}{is a number equal to the global cost.}
@@ -44,10 +44,10 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
   bool test;
   test = false;
   if (type == 1){
+    //test = true;//
     OP<Geom1> X = OP<Geom1>(data1, data2, penalty);
-    
     X.algoFPOP(data1, data2, type, test);     
-    res["changepoints"] = X.get_chpts();
+    res["chpts"] = X.get_chpts();
     res["means1"] = X.get_means1();
     res["means2"] = X.get_means2();
     res["globalCost"] = X.get_globalCost();
@@ -56,7 +56,7 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
     //test = true;//
     OP<Geom2> Y = OP<Geom2>(data1, data2, penalty);
     Y.algoFPOP(data1, data2, type, test);   
-    res["changepoints"] = Y.get_chpts();
+    res["chpts"] = Y.get_chpts();
     res["means1"] = Y.get_means1();
     res["means2"] = Y.get_means2();
     res["globalCost"] = Y.get_globalCost();
@@ -65,7 +65,7 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
     //test = true;//
     OP<Geom3> Z = OP<Geom3>(data1, data2, penalty);
     Z.algoFPOP(data1, data2, type, test);   
-    res["changepoints"] = Z.get_chpts();
+    res["chpts"] = Z.get_chpts();
     res["means1"] = Z.get_means1();
     res["means2"] = Z.get_means2();
     res["globalCost"] = Z.get_globalCost();

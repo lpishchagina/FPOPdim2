@@ -2,16 +2,21 @@
 #define COST_H
 
 #include <vector>
+/*
+ Class Cost
+ -------------------------------------------------------------------------------
+ Description: 
+ The Gaussian cost for the interval (i,t) in 2-dimension. 
+ 
+ Parameters:
+ "coef" = (t - i + 1);
+ "mu1" - the value of mean of the first time series for the interval (i,t);
+ "mu2" - the value of mean of the second time series for the interval (i,t);
+ "mi_1_p" - sum of the value of the optimal cost at moment (i-1) and penalty;
+ "coef_Var" = coef * sumVar(xk_i:t).
+ -------------------------------------------------------------------------------
+ */
 
-// q_it(theta1, theta2) = mi_1+penalty + (t - i + 1) * [(theta1 - E(y1_it))^2 + (theta2 - E(y2_it))^2] + (t - i + 1) * (Var(y1_it) + Var(y2_it))
-//coef_Var = coef*(Var(y1_it) + Var(y2_it))
-//mi_1_p =mi_1+penalty
-//coef = (t - i + 1) 
-//(mu1,mu2) = (E(y1_it), E(y2_it) )
-// q_it = mi_1_p + coef * [(theta1 - mu1)^2 + (theta2 - mu2^2)] + coef_Var
-
-//Class Cost
-//------------------------------------------------------------------------------
 class Cost{
 private:
   unsigned int coef;    //(t - i + 1)
