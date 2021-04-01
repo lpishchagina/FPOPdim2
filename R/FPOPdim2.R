@@ -3,7 +3,7 @@
 #' @description Generation of data of dimension 2 with a given values of means and changepoints
 #' 
 #' @param n number of data point.
-#' @param chapts a vector of increasing changepoint indices (last element is always n!).
+#' @param chpts a vector of increasing changepoint indices (last element is always n!).
 #' @param means1 vector of successive means1 for data1.
 #' @param means2 vector of successive means2 for data2.
 #' @param noise standard deviation of an additional normal noise.

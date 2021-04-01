@@ -75,31 +75,34 @@ library(base)
 
 set.seed(13)
 
-size <- 1000
 
-sigma <- 1
+beta <- 2 * log(1000)
 
-beta <- 2 * sigma * log(size)
-
-Data <- data_gen2D(n = size, chpts = c(size), means1 = c (0),means1 = c (0), noise = 1) 
+Data <- data_gen2D(1000, c(1000), 0, 0,1) 
 
 resFPOP1 <- FPOP2D(Data[1,], Data[2,], penalty = beta, type = 1)
 
 resFPOP2 <- FPOP2D(Data[1,], Data[2,], penalty = beta, type = 2)
 
-resFPOP3 <- FPOP2D(Data[1,], Data[2,], penalty = beta, type = 2)
+resFPOP3 <- FPOP2D(Data[1,], Data[2,], penalty = beta, type = 3)
 
 ```
 
 ```
-## resFPOP2$chpts
-## 
-## resFPOP2$means1
-## 
-## resFPOP2$means2
-## 
-## resFPOP2$globalCost
-##
+resFPOP2
+
+$chpts
+[1] 1000
+
+$means1
+[1] -0.003112923
+
+$means2
+[1] 0.0008128666
+ 
+$globalCost
+[1] -13.81551
+
 ```
 
 `chpts` is the changepoint vector that gives the last index of each segment.
