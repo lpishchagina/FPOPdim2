@@ -46,7 +46,7 @@ The last element of `chpts` always equals to the length of time series.
 ```r
 Data =  data_gen2D(n = 10, chpts = c(2, 4, 6, 8, 10), means1 = c (0, 1, 0, 1, 0), means2 = (1, 2, 3, 4, 5), noise = 1)
 ```
-## The function FPOPDp
+## The function FPOP2D
 
 The `FPOP2D` function returns the result of the segmentation of FPOP-method using the parameters:
 
