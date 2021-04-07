@@ -24,5 +24,5 @@ matrix of data of dimension 2 x n with a given values of means by the segmentati
 Generation of data of dimension 2 with a given values of means and changepoints
 }
 \examples{
-data_gen2D(n = 10, chpts = c(2, 4, 6, 8, 10), means1 = c (0, 1, 0, 1, 0), means2 = (1, 2, 3, 4, 5), noise = 1)
+data_gen2D(n = 10, chpts = c(10), means1 = c(0), means2 =c(1), noise = 1)
 }
