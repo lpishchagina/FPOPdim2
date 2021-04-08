@@ -40,26 +40,20 @@ void Geom2::InitialGeometry(std::list<Disk> disks){
 void Geom2::UpdateGeometry(Disk disk_t){
   //Intersection
   rect_t.Intersection_disk(disk_t);
-  //Remove disks
+  //Exclusion
   if(rect_t.IsEmpty_rect() == false){
     std::list<Disk>::iterator iter;
+    Rect rect;
     iter = disks_t_1.begin();
     while( iter != disks_t_1.end()){
-      Disk disk = *iter;
-      Rect rect = rect_t;
-      rect.Intersection_disk(disk);
-      if(rect.IsEmpty_rect()){iter = disks_t_1.erase(iter); --iter;
+      rect = rect_t;
+      rect.Intersection_disk((*iter));
+      if(rect.IsEmpty_rect() == false){
+        rect_t.Exclusion_disk((*iter));
+        if(rect_t.IsEmpty_rect()){iter = disks_t_1.end();}
+        else{++iter;}
       }
-      ++iter;
-    }
-    //Exclusion
-    iter = disks_t_1.begin();
-    while( iter != disks_t_1.end()){
-      Disk disk = *iter;
-      
-      rect_t.Exclusion_disk(disk);
-      if(rect_t.IsEmpty_rect()){iter = disks_t_1.end();}
-      else{ ++iter;}
+      else{ iter = disks_t_1.erase(iter);}//Remove disks
     }
   }
 }
