@@ -32,7 +32,9 @@ bool Rect::EmptyIntersection(Disk disk){
   double pnt_min1 = c1;
   double pnt_min2 = c2;
   if (c1 <= rectx0){ pnt_min1 = rectx0;}
-  if (c2 >= rectx1){ pnt_min2 = rectx1;}
+  if (c1 >= rectx1){ pnt_min1 = rectx1;}
+  if (c2 <= recty0){ pnt_min2 = recty0;}
+  if (c2 >= recty1){ pnt_min2 = recty1;}
   //distance--------------------------------------------------------------------
   double  d = sqrt((pnt_min1 - c1)*(pnt_min1 - c1) + (pnt_min2 - c2)*(pnt_min2 - c2));  
   if (d >= disk.get_radius()) {return true;}
@@ -49,7 +51,9 @@ void Rect::Intersection_disk(Disk disk){
   double pnt_min2 = c2;
  
   if (c1 <= rectx0){ pnt_min1 = rectx0;}
-  if (c2 >= rectx1){ pnt_min2 = rectx1;}
+  if (c1 >= rectx1){ pnt_min1 = rectx1;}
+  if (c2 <= recty0){ pnt_min2 = recty0;}
+  if (c2 >= recty1){ pnt_min2 = recty1;}
   
   //discriminant----------------------------------------------------------------
   double dxy2_1 =  r * r - (pnt_min2 - c2) * (pnt_min2 - c2);
