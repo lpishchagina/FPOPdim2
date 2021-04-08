@@ -40,26 +40,21 @@ void Geom3::InitialGeometry(std::list<Disk> disks){
   fl_empty = false;
 }
 
-
-
 //UpdateGeometry****************************************************************
 void Geom3::UpdateGeometry(Disk disk_t){
   std::list<Disk>::iterator iter;
   double dist;
-  Disk disk;
   iter = disks_t_1.begin();
   while( iter != disks_t_1.end()){
-    disk = *iter;
-    dist = Dist(disk_t.get_center1(), disk_t.get_center2(), disk.get_center1(), disk.get_center2());
-    if (dist < (disk.get_radius() + disk_t.get_radius())){
-      if (dist <= (disk.get_radius() - disk_t.get_radius())){ //Exclusion is empty
+    dist = Dist(disk_t.get_center1(), disk_t.get_center2(), (*iter).get_center1(), (*iter).get_center2());
+    if (dist < ((*iter).get_radius() + disk_t.get_radius())){
+      if (dist <= ((*iter).get_radius() - disk_t.get_radius())){ //Exclusion is empty
         fl_empty = true;
         iter = disks_t_1.end();
-        --iter;
       }
+      else {++iter;}
     }
-    else { iter = disks_t_1.erase(iter);--iter;}//Remove disks
-    ++iter; 
+    else { iter = disks_t_1.erase(iter);}//Remove disks
   }
 } 
 
