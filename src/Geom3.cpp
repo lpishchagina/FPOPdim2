@@ -40,30 +40,26 @@ void Geom3::InitialGeometry(std::list<Disk> disks){
   fl_empty = false;
 }
 
+
+
 //UpdateGeometry****************************************************************
 void Geom3::UpdateGeometry(Disk disk_t){
   std::list<Disk>::iterator iter;
-  //Remove disks
+  double dist;
+  Disk disk;
   iter = disks_t_1.begin();
   while( iter != disks_t_1.end()){
-    Disk disk = *iter;
-    double dist = Dist(disk_t.get_center1(), disk_t.get_center2(), disk.get_center1(), disk.get_center2());
-    
-    if (dist >= (disk.get_radius() + disk_t.get_radius())){ iter = disks_t_1.erase(iter);--iter;}
-    
-    ++iter; 
-  }
-  //Exclusion
-  iter = disks_t_1.begin();
-  while( iter != disks_t_1.end()){
-    Disk disk = *iter;
-    double dist;
+    disk = *iter;
     dist = Dist(disk_t.get_center1(), disk_t.get_center2(), disk.get_center1(), disk.get_center2());
-    if (dist <= (disk.get_radius() - disk_t.get_radius())){
-      fl_empty = true;
-      iter = disks_t_1.end();
+    if (dist < (disk.get_radius() + disk_t.get_radius())){
+      if (dist <= (disk.get_radius() - disk_t.get_radius())){ //Exclusion is empty
+        fl_empty = true;
+        iter = disks_t_1.end();
+        --iter;
+      }
     }
-    else{++iter;}
+    else { iter = disks_t_1.erase(iter);--iter;}//Remove disks
+    ++iter; 
   }
 } 
 

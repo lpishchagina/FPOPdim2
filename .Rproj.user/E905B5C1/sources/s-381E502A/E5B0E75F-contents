@@ -9,5 +9,5 @@ Description: Detection changepoints using the Functional Pruning Optimal Partiti
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.6)
 LinkingTo: Rcpp
-Encoding: UTF-8
 RoxygenNote: 7.1.1
+Encoding: UTF-8

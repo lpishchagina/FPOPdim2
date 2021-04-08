@@ -22,6 +22,6 @@ Plot of data with a given values of means and changepoints.
 Plot of data with a  values of means and changepoints.
 }
 \examples{
-Data <- data_gen2D(n = 10, chpts = c(10), means1 = c(0), means2 =c(1), noise = 1)
-plotFPOP2D(data = Data, chpts= c(10), means1 = c(0), means2 = c(1))
+Data <- data_gen2D(n = 10, chpts = c(10), means1 = c(0), means2 = c(1), noise = 1)
+plotFPOP2D(data = Data, chpts = c(10), means1 = c(0), means2 = c(1))
 }

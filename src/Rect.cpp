@@ -68,15 +68,13 @@ void Rect::Exclusion_disk(Disk disk){
   double dxy2_2 =  r * r - (pnt_max1 - c1) * (pnt_max1 - c1);
   //----------------------------------------------------------------------------
   if (dxy2_1 > 0){
-    if (pnt_max1 == rectx0){rectx1 = min_ab(rectx1, c1 - sqrt(dxy2_1));}
-    else {rectx0 = max_ab(rectx0, c1 + sqrt(dxy2_1));}
+    if ((pnt_max1 == rectx0) && (rectx1 <= c1 + sqrt(dxy2_1))) {rectx1 = min_ab(rectx1, c1 - sqrt(dxy2_1));}
+    if ((pnt_max1 == rectx1) && (rectx0 >= c1 - sqrt(dxy2_1))) {rectx0 = max_ab(rectx0, c1 + sqrt(dxy2_1));}
   }
-  else {rectx0 = rectx1;}
   if (dxy2_2 > 0){
-    if (pnt_max2 == recty0){recty1 = min_ab(recty1, c2 - sqrt(dxy2_2));}
-    else {recty0 = max_ab(recty0, c2 + sqrt(dxy2_2));}
+    if ((pnt_max2 == recty0) && (recty1 <= c2 + sqrt(dxy2_2))) {recty1 = min_ab(recty1, c2 - sqrt(dxy2_2));}
+    if ((pnt_max2 == recty1) && (rectx0 >= c2 - sqrt(dxy2_2))) {recty0 = max_ab(recty0, c2 + sqrt(dxy2_2));}
   }
-  else {recty0 = recty1;}
 }
 //******************************************************************************
 
