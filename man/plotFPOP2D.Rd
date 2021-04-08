@@ -9,7 +9,7 @@ plotFPOP2D(data, chpts, means1, means2)
 \arguments{
 \item{data}{matrix of data of dimension 2 x data length.}
 
-\item{chpts}{a vector of increasing changepoint indices (last element is always n!).}
+\item{chpts}{a vector of increasing changepoint indices. Last index is always less than data length.}
 
 \item{means1}{vector of successive means1 for data1.}
 
@@ -22,6 +22,6 @@ Plot of data with a given values of means and changepoints.
 Plot of data with a  values of means and changepoints.
 }
 \examples{
-Data <- data_gen2D(n = 10, chpts = c(10), means1 = c(0), means2 = c(1), noise = 1)
-plotFPOP2D(data = Data, chpts = c(10), means1 = c(0), means2 = c(1))
+Data <- data_gen2D(n = 10, chpts = NULL, means1 = 0, means2 = 1, noise = 1)
+plotFPOP2D(data = Data, chpts = NULL, means1 = 0, means2 = 1)
 }

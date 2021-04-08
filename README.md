@@ -33,18 +33,23 @@ The `data_gen2D` function simulates a bivariate time series of length `n` with t
 
 `chpts` is the changepoint vector that gives the last index of each segment.
 
-The last element of `chpts` always equals to the length of time series.
+The last element of `chpts` is always less than to the length of time series (by default, `chpts = NULL`  for the data without changepoints). 
 
-`means1` vector of successive means for the first univariate time series.
+`means1` vector of successive means for the first univariate time series (by default it is equal to `0`).
 
-`means2` vector of successive means for the second univariate time series.
-
+`means2` vector of successive means for the second univariate time series (by default it is equal to `0`).
 
 `noise` is a variance of the time series (by default it is equal to `1`).
 
 
 ```r
-Data =  data_gen2D(n = 10, chpts = c(2, 4, 6, 8, 10), means1 = c (0, 1, 0, 1, 0), means2 = (1, 2, 3, 4, 5), noise = 1)
+set.seed(13)
+
+size <- 1000
+
+Data1 <- data_gen2D(size) 
+ 
+Data2 <-  data_gen2D(n = size, chpts = 50, means1 = c(0,1), means2 = c(0,1), noise = 1)
 ```
 ## The function FPOP2D
 
@@ -75,31 +80,53 @@ library(base)
 
 set.seed(13)
 
+size <- 1000
 
-beta <- 2 * log(1000)
+beta <- 2 * log(size)
 
-Data <- data_gen2D(1000, c(1000), 0, 0,1) 
+Data1 <- data_gen2D(size) 
 
-resFPOP1 <- FPOP2D(Data[1,], Data[2,], penalty = beta, type = 1)
+FPOP2D(Data1[1,], Data1[2,], penalty = beta, type = 1)
 
-resFPOP2 <- FPOP2D(Data[1,], Data[2,], penalty = beta, type = 2)
+FPOP2D(Data1[1,], Data1[2,], penalty = beta, type = 2)
 
-resFPOP3 <- FPOP2D(Data[1,], Data[2,], penalty = beta, type = 3)
+FPOP2D(Data1[1,], Data1[2,], penalty = beta, type = 3)
 
 ```
 
 ```
-resFPOP2
-
 $chpts
-[1] 1000
+numeric(0)
 
 $means1
-[1] -0.003112923
+[1] -0.000587651
 
 $means2
-[1] 0.0008128666
+[1] 0.02661018
  
+$globalCost
+[1] 2.696697e-231
+
+```
+
+```
+Data2 <- data_gen2D(n = size, chpts = 50, means1 = c(0,1), means2 = c(0,1), noise = 1)
+
+FPOP2D(Data2[1,], Data2[2,], penalty = beta, type = 1)
+
+FPOP2D(Data2[1,], Data2[2,], penalty = beta, type = 2)
+
+FPOP2D(Data2[1,], Data2[2,], penalty = beta, type = 3)
+
+$chpts
+[1] 50
+
+$means1
+[1] -0.1255619  0.9782501
+
+$means2
+[1] -0.2024644  0.9723707
+
 $globalCost
 [1] -13.81551
 
@@ -107,7 +134,7 @@ $globalCost
 
 `chpts` is the changepoint vector that gives the last index of each segment.
 
-The last element of `chpts` always equals to the length of time series.
+For the data without changepoints `chpts = numeric(0)`.
 
 `means1` is the vector of successive means for the first time series.
 

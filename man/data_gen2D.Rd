@@ -4,18 +4,19 @@
 \alias{data_gen2D}
 \title{data_gen2D}
 \usage{
-data_gen2D(n, chpts, means1, means2, noise = 1)
+data_gen2D(n, chpts = NULL, means1 = 0, means2 = 0, noise = 1)
 }
 \arguments{
 \item{n}{number of data point.}
 
-\item{chpts}{a vector of increasing changepoint indices (last element is always n!).}
+\item{chpts}{a vector of increasing changepoint indices. Last index is always less than 'n'.
+By default, 'chpts = NULL' (the data without changepoints).}
 
-\item{means1}{vector of successive means1 for data1.}
+\item{means1}{vector of successive means1 for data1, by default 'means1 = 0'.}
 
-\item{means2}{vector of successive means2 for data2.}
+\item{means2}{vector of successive means2 for data2, by default 'means2 = 0'.}
 
-\item{noise}{standard deviation of an additional normal noise.}
+\item{noise}{standard deviation of an additional normal noise, by default 'noise = 1'.}
 }
 \value{
 matrix of data of dimension 2 x n with a given values of means by the segmentation.
@@ -24,5 +25,5 @@ matrix of data of dimension 2 x n with a given values of means by the segmentati
 Generation of data of dimension 2 with a given values of means and changepoints
 }
 \examples{
-Data <- data_gen2D(n = 10, chpts = c(10), means1 = c(0), means2 = c(1), noise = 1)
+Data <- data_gen2D(n = 10, chpts = NULL, means1 = 0, means2 = 0, noise = 1)
 }

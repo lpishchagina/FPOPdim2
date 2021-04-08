@@ -180,6 +180,7 @@ public:
       chp = last_chpt_mean[0][chp-1];
     }
     reverse(chpts.begin(), chpts.end());
+    chpts.pop_back();
     reverse(means1.begin(), means1.end());
     reverse(means2.begin(), means2.end());
     
