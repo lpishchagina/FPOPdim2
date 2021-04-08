@@ -36,6 +36,8 @@ public:
 
   double min_ab(double a, double b);
   double max_ab(double a, double b);
+  
+  bool EmptyIntersection(Disk disk);
 
   bool IsEmpty_rect();
   void Exclusion_disk(Disk disk);
