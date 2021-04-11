@@ -18,6 +18,7 @@ class Intervals
     bool isempty(){return(interv.empty());};
     void intersection(Interval const& inter);
     std::list<Point> buildPoints(Disk const& disk_t);
+    void print();
 }; 
 
 #endif //INTERVALS_H

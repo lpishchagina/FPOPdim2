@@ -37,13 +37,15 @@ class Interval
       right = theta + thetaPM;
       if(left < -M_PI){left = left + 2*M_PI;}
       if(right > M_PI){right = right - 2*M_PI;}
+      if(left > M_PI){left = left - 2*M_PI;}
+      if(right < -M_PI){right = right + 2*M_PI;}
     };
     
     void symmetry()
     {
       double temp = left;
-      left= right;
-      right= temp;
+      left = right;
+      right = temp;
     };
 };
 

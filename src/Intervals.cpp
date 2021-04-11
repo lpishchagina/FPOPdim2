@@ -7,6 +7,16 @@
 using namespace std;
 
 
+void Intervals::print()
+{
+  std::list<Interval>::iterator it = interv.begin();
+  std::cout <<  " -INTERVALS- ";
+  while(it != interv.end())
+  {
+    std::cout << (*it).get_left() << " " <<  (*it).get_right() << " --- ";
+    ++it;
+  }
+}
 
 void Intervals::intersection(Interval const& inter)
 {
