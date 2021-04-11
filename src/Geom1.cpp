@@ -12,23 +12,24 @@ using namespace Rcpp;
 using namespace std;
 
 //accessory*********************************************************************
-unsigned int Geom1::get_label_t(){return label_t;}
+unsigned int Geom1::get_label_t() const {return label_t;}
 
-Rect Geom1::get_rect_t(){return rect_t;}
+Rect Geom1::get_rect_t() const {return rect_t;}
 
-std::list<Disk> Geom1::get_disks_t_1(){
+std::list<Disk> Geom1::get_disks_t_1() const{
   std::list<Disk> list_NULL;
   list_NULL.clear();
   return list_NULL;
 }
 
 //InitialGeometry***************************************************************
-void Geom1::InitialGeometry(std::list<Disk> disks){ 
+void Geom1::InitialGeometry(unsigned int i, const std::list<Disk> &disks){ 
+  label_t = i;
   rect_t = Rect();
 }
 
 //UpdateGeometry****************************************************************
-void Geom1::UpdateGeometry(Disk disk_t){rect_t.Intersection_disk(disk_t);}
+void Geom1::UpdateGeometry(const Disk &disk_t){rect_t.Intersection_disk(disk_t);}
 
 //EmptyGeometry*****************************************************************
 bool Geom1::EmptyGeometry(){return rect_t.IsEmpty_rect();}

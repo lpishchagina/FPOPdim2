@@ -28,13 +28,13 @@ public:
   Geom3();
   Geom3(unsigned int t);
   
-  unsigned int get_label_t();
-  std::list<Disk> get_disks_t_1();
+  unsigned int get_label_t() const;
+  std::list<Disk> get_disks_t_1() const;
   
   double Dist(double a1, double a2, double b1, double b2);
   
-  void InitialGeometry(std::list<Disk> disks);
-  void UpdateGeometry(Disk disk_t);
+  void InitialGeometry(unsigned int i, const std::list<Disk> &disks);
+  void UpdateGeometry(const Disk &disk_t);
   bool EmptyGeometry();
 };
 #endif //GEOM3_H

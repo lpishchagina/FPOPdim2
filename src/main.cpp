@@ -6,6 +6,7 @@
 #include "Geom1.h"
 #include "Geom2.h"
 #include "Geom3.h"
+#include "Geom5.h"
 
 #include "math.h"
 #include <Rcpp.h>
@@ -64,6 +65,15 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
   if (type == 3){
     //test = true;//
     OP<Geom3> Z = OP<Geom3>(data1, data2, penalty);
+    Z.algoFPOP(data1, data2, type, test);   
+    res["chpts"] = Z.get_chpts();
+    res["means1"] = Z.get_means1();
+    res["means2"] = Z.get_means2();
+    res["globalCost"] = Z.get_globalCost();
+  }
+  if (type == 5){
+    //test = true;//
+    OP<Geom5> Z = OP<Geom5>(data1, data2, penalty);
     Z.algoFPOP(data1, data2, type, test);   
     res["chpts"] = Z.get_chpts();
     res["means1"] = Z.get_means1();

@@ -9,13 +9,13 @@ using namespace Rcpp;
 using namespace std;
 
 //accessory*********************************************************************
-double Rect::get_rectx0(){return rectx0;}
+double Rect::get_rectx0() const {return rectx0;}
 
-double Rect::get_recty0(){return recty0;}
+double Rect::get_recty0() const {return recty0;}
 
-double Rect::get_rectx1(){return rectx1;}
+double Rect::get_rectx1() const {return rectx1;}
 
-double Rect::get_recty1(){return recty1;}
+double Rect::get_recty1() const {return recty1;}
 
 double Rect::min_ab(double a, double b){if (a < b) {return a;} else {return b;}}
 
@@ -25,7 +25,7 @@ double Rect::max_ab(double a, double b){if (a > b) {return a;} else {return b;}}
 bool Rect::IsEmpty_rect(){ if (rectx0 >= rectx1 || recty0 >= recty1) {return true;} else { return false;}}
 
 //EmptyIntersection*************************************************************
-bool Rect::EmptyIntersection(Disk disk){
+bool Rect::EmptyIntersection(const Disk &disk){
   double c1 = disk.get_center1(); 
   double c2 = disk.get_center2();
   //point_min-------------------------------------------------------------------
@@ -36,13 +36,12 @@ bool Rect::EmptyIntersection(Disk disk){
   if (c2 <= recty0){ pnt_min2 = recty0;}
   if (c2 >= recty1){ pnt_min2 = recty1;}
   //distance--------------------------------------------------------------------
-  double  d = sqrt((pnt_min1 - c1)*(pnt_min1 - c1) + (pnt_min2 - c2)*(pnt_min2 - c2));  
-  if (d >= disk.get_radius()) {return true;}
+  if (sqrt((pnt_min1 - c1)*(pnt_min1 - c1) + (pnt_min2 - c2)*(pnt_min2 - c2)) >= disk.get_radius()) {return true;}
   else {return false;}
 }
 
 //Intersection_disk*************************************************************
-void Rect::Intersection_disk(Disk disk){
+void Rect::Intersection_disk(const Disk &disk){
   double r = disk.get_radius();        
   double c1 = disk.get_center1(); 
   double c2 = disk.get_center2();
@@ -73,7 +72,7 @@ void Rect::Intersection_disk(Disk disk){
 }
 
 //Exclusion_disk****************************************************************
-void Rect::Exclusion_disk(Disk disk){
+void Rect::Exclusion_disk(const Disk &disk){
   double r = disk.get_radius();        
   double c1 = disk.get_center1(); 
   double c2 = disk.get_center2();

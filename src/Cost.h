@@ -32,8 +32,8 @@ public:
   unsigned int get_coef() const;
   double get_coef_Var() const;
   double get_mi_1_p() const;
-  double get_mu1();
-  double get_mu2();
+  double get_mu1() const;
+  double get_mu2() const;
   double get_min();     // q_it is a paraboloid => min{q_it} = coef_Var + mi_1_p
 
 

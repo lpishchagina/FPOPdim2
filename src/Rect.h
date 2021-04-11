@@ -29,19 +29,19 @@ public:
   Rect():rectx0(-INFINITY), recty0(-INFINITY), rectx1(INFINITY), recty1(INFINITY){}
   Rect(double x0, double y0, double x1, double y1):rectx0(x0), recty0(y0), rectx1(x1), recty1(y1){}
 
-  double get_rectx0();
-  double get_recty0();
-  double get_rectx1();
-  double get_recty1();
+  double get_rectx0() const;
+  double get_recty0() const;
+  double get_rectx1() const;
+  double get_recty1() const;
 
   double min_ab(double a, double b);
   double max_ab(double a, double b);
   
-  bool EmptyIntersection(Disk disk);
+  bool EmptyIntersection(const Disk &disk);
 
   bool IsEmpty_rect();
-  void Exclusion_disk(Disk disk);
-  void Intersection_disk(Disk disk);
+  void Exclusion_disk(const Disk &disk);
+  void Intersection_disk(const Disk &disk);
   
 
 };

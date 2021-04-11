@@ -18,15 +18,15 @@ Cost::Cost(unsigned int i, unsigned int t, double* si_1, double* st, double mi_1
 }
 
 //accessory*********************************************************************
-unsigned int Cost::get_coef() const{return coef;}
+unsigned int Cost::get_coef() const {return coef;}
 
-double Cost::get_coef_Var() const{return coef_Var;}
+double Cost::get_coef_Var() const {return coef_Var;}
 
-double Cost::get_mi_1_p() const{return mi_1_p;}
+double Cost::get_mi_1_p() const {return mi_1_p;}
 
-double Cost::get_mu1(){return mu1;}
+double Cost::get_mu1() const {return mu1;}
 
-double Cost::get_mu2(){return mu2;}
+double Cost::get_mu2() const {return mu2;}
 
 double Cost::get_min(){ return(coef_Var + mi_1_p);}// q_it is a paraboloid => min{q_it} = coef_Var + mi_1_p
 

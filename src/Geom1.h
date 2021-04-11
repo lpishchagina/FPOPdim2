@@ -25,12 +25,12 @@ public:
   Geom1():label_t (0), rect_t(Rect()){}
   Geom1(unsigned int t):label_t(t), rect_t(Rect()){}
  
-  unsigned int get_label_t();
-  Rect get_rect_t();
-  std::list<Disk> get_disks_t_1();
+  unsigned int get_label_t() const;
+  Rect get_rect_t() const;
+  std::list<Disk> get_disks_t_1() const;
   
-  void InitialGeometry(std::list<Disk> disks);
-  void UpdateGeometry(Disk disk_t);
+  void InitialGeometry(unsigned int i, const std::list<Disk> &disks);
+  void UpdateGeometry(const Disk &disk_t);
   bool EmptyGeometry();
 };
 #endif //GEOM1_H

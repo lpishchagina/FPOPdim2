@@ -15,29 +15,29 @@ using namespace std;
 Geom2::Geom2(){
   label_t = 0;
   rect_t = Rect();
-  disks_t_1.clear();
 }
 Geom2::Geom2(unsigned int t){
   label_t = t;
   rect_t = Rect();
-  disks_t_1.clear();
 }
 
 //accessory*********************************************************************
-unsigned int Geom2::get_label_t(){return label_t;}
+unsigned int Geom2::get_label_t() const {return label_t;}
 
-Rect Geom2::get_rect_t(){return rect_t;}
+Rect Geom2::get_rect_t() const {return rect_t;}
 
-std::list<Disk> Geom2::get_disks_t_1(){return disks_t_1;}
+std::list<Disk> Geom2::get_disks_t_1() const {return disks_t_1;}
 
 //InitialGeometry***************************************************************
-void Geom2::InitialGeometry(std::list<Disk> disks){
+void Geom2::InitialGeometry(unsigned int i, const std::list<Disk> &disks){
+  label_t = i; 
   rect_t = Rect(-INFINITY, -INFINITY, INFINITY, INFINITY);
+  disks_t_1.clear();
   disks_t_1 = disks; 
 }
 
 //UpdateGeometry****************************************************************
-void Geom2::UpdateGeometry(Disk disk_t){
+void Geom2::UpdateGeometry(const Disk &disk_t){
   //Intersection
   rect_t.Intersection_disk(disk_t);
   // Exclusions

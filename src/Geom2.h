@@ -28,12 +28,12 @@ public:
   Geom2();
   Geom2(unsigned int t);
   
-  unsigned int get_label_t();
-  Rect get_rect_t();
-  std::list<Disk> get_disks_t_1();
+  unsigned int get_label_t() const;
+  Rect get_rect_t() const;
+  std::list<Disk> get_disks_t_1() const;
 
-  void InitialGeometry(std::list<Disk> disks);
-  void UpdateGeometry(Disk disk_t);
+  void InitialGeometry(unsigned int i, const std::list<Disk> &disks);
+  void UpdateGeometry(const Disk &disk_t);
   bool EmptyGeometry();
 };
 #endif //GEOM2_H

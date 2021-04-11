@@ -64,7 +64,7 @@ public:
     penalty = beta;
     sx12 = new double*[n+1]; 
     for(unsigned int i = 0; i < n + 1; i++) {sx12[i] = new double[4];}
-    m = new double[n + 1];        // "globalCost" = m[n+1] - changepoints.size()*penalty
+    m = new double[n + 1];        // "globalCost" = m[n+1] - chpts.size()*penalty
   }
   //----------------------------------------------------------------------------
   ~OP<GeomX>(){
@@ -96,9 +96,7 @@ public:
   //----------------------------------------------------------------------------
   void algoFPOP(std::vector<double>& x1, std::vector<double>& x2, int type, bool test_mode){
     //preprocessing-------------------------------------------------------------
-    // n = x1.size();
     sx12 = vect_sx12(x1, x2); 
-    // penalty = get_penalty();
     m[0] = 0;
     double** last_chpt_mean = new double*[3];// vectors of best last changepoints, mean1 and mean2
     for(unsigned int i = 0; i < 3; i++) {last_chpt_mean[i] = new double[n];}
@@ -107,21 +105,27 @@ public:
     if (test_mode == true){test_file.open("test.txt");}
     
     //Algorithm-----------------------------------------------------------------
+    double min_val;  // définitions itératives (*)
+    double mean1;
+    double mean2;
+    double r2;
+    unsigned int lbl; 
+    unsigned int u; 
+    std::list<Disk> list_disk;//list of active disks(t-1)
+    geom = GeomX(0); //changer une positon(**)
     for (unsigned int t = 0; t < n ; t++){
       Cost cost = Cost(t, t, sx12[t], sx12[t+1], m[t]);
-      double min_val = cost.get_min(); //min value of cost
-      double mean1 =  cost.get_mu1();   //means for (lbl, t)
-      double mean2 = cost.get_mu2(); 
-      unsigned int lbl = t;         //best last position
+      min_val = cost.get_min(); //min value of cost  //suprimer définitions itératives (*)
+      mean1 =  cost.get_mu1();   //means for (lbl, t)
+      mean2 = cost.get_mu2(); 
+      lbl = t;         //best last position
       
-      std::list<Disk> list_disk;//list of active disks(t-1)
       list_disk.clear();
       
       //First run: searching min------------------------------------------------
-      typename std::list<GeomX>::reverse_iterator rit_geom;
-      rit_geom = list_geom.rbegin();
+      typename std::list<GeomX>::reverse_iterator rit_geom = list_geom.rbegin(); // supprimer ligne rit_geom = list_geom.rbegin();
       while(rit_geom!= list_geom.rend()){
-        unsigned int u = rit_geom -> get_label_t();
+        u = rit_geom -> get_label_t(); //suprimer définitions itératives (*)
         // Searching: min
         cost = Cost(u, t, sx12[u], sx12[t + 1], m[u]);
         if( min_val >= cost.get_min()){
@@ -132,9 +136,9 @@ public:
         }
         //list of active disks(t-1)
         Cost cost_t_1 = Cost(u, t-1, sx12[u], sx12[t], m[u]);
-        double r2 = (m[t] - m[u] - cost_t_1.get_coef_Var())/cost_t_1.get_coef();
-        Disk disk = Disk(cost_t_1.get_mu1(),cost_t_1.get_mu2(), sqrt(r2));
-        list_disk.push_back(disk);
+        r2 = (m[t] - m[u] - cost_t_1.get_coef_Var())/cost_t_1.get_coef();  //suprimer définitions itératives (*)
+        list_disk.push_back(Disk(cost_t_1.get_mu1(),cost_t_1.get_mu2(), sqrt(r2)));// replacer  Disk disk = Disk(cost_t_1.get_mu1(),cost_t_1.get_mu2(), sqrt(r2));list_disk.push_back(disk);
+    
         ++rit_geom;
       }
       //best last changepoints and means
@@ -146,23 +150,20 @@ public:
       m[t + 1] = min_val + penalty; 
       
       //Initialisation of geometry----------------------------------------------
-      geom = GeomX(t); 
-      geom.InitialGeometry(list_disk);
-      list_geom.push_back(geom);
+      geom.InitialGeometry(t, list_disk);
+      list_geom.push_back(geom);//(**) geom = GeomX(t)
       
       //Second run: Update list of geometry-------------------------------------
-      typename std::list<GeomX>::iterator it_geom;
-      it_geom = list_geom.begin();      
+      typename std::list<GeomX>::iterator it_geom = list_geom.begin();//supprimer ligne it_geom = list_geom.begin(); 
       while (it_geom != list_geom.end()){
         lbl = it_geom -> get_label_t();
         cost = Cost(lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
-        double r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
+        r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();//suprimer définitions itératives (*)
         //PELT
         if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;}
         //FPOP
         if (r2 > 0){
-          Disk disk_lblt = Disk(cost.get_mu1(), cost.get_mu2(), sqrt(r2));
-          it_geom -> UpdateGeometry(disk_lblt);
+          it_geom -> UpdateGeometry(Disk(cost.get_mu1(), cost.get_mu2(), sqrt(r2))); //suprimer définitions itératives (*)
           if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;}
           else {if (test_mode == true && (type == 2 || type == 3)){ test_file << it_geom ->get_label_t() << " "<< it_geom ->get_disks_t_1().size() << " ";}}
         }//else
@@ -180,11 +181,11 @@ public:
       chp = last_chpt_mean[0][chp-1];
     }
     reverse(chpts.begin(), chpts.end());
-    chpts.pop_back();
+    chpts.pop_back();                 // vector chpt (tau1,.., tauk) sans n!!!!
     reverse(means1.begin(), means1.end());
     reverse(means2.begin(), means2.end());
     
-    globalCost = m[n + 1] - penalty * chpts.size();
+    globalCost = m[n + 1] - penalty * chpts.size();   // c'est vrai ou non??????
     //memory--------------------------------------------------------------------
     for(unsigned int i = 0; i < 3; i++) {delete(last_chpt_mean[i]);}
     delete [] last_chpt_mean;
