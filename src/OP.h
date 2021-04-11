@@ -7,6 +7,7 @@
 #include "Geom1.h"
 #include "Geom2.h"
 #include "Geom3.h"
+#include "Geom5.h"
 
 #include <fstream>
 #include <iostream>
@@ -105,17 +106,17 @@ public:
     if (test_mode == true){test_file.open("test.txt");}
     
     //Algorithm-----------------------------------------------------------------
-    double min_val;  // définitions itératives (*)
+    double min_val;  
     double mean1;
     double mean2;
     double r2;
     unsigned int lbl; 
     unsigned int u; 
     std::list<Disk> list_disk;//list of active disks(t-1)
-    geom = GeomX(0); //changer une positon(**)
+    geom = GeomX(0); 
     for (unsigned int t = 0; t < n ; t++){
       Cost cost = Cost(t, t, sx12[t], sx12[t+1], m[t]);
-      min_val = cost.get_min(); //min value of cost  //suprimer définitions itératives (*)
+      min_val = cost.get_min(); //min value of cost  
       mean1 =  cost.get_mu1();   //means for (lbl, t)
       mean2 = cost.get_mu2(); 
       lbl = t;         //best last position
@@ -123,9 +124,9 @@ public:
       list_disk.clear();
       
       //First run: searching min------------------------------------------------
-      typename std::list<GeomX>::reverse_iterator rit_geom = list_geom.rbegin(); // supprimer ligne rit_geom = list_geom.rbegin();
+      typename std::list<GeomX>::reverse_iterator rit_geom = list_geom.rbegin();
       while(rit_geom!= list_geom.rend()){
-        u = rit_geom -> get_label_t(); //suprimer définitions itératives (*)
+        u = rit_geom -> get_label_t(); 
         // Searching: min
         cost = Cost(u, t, sx12[u], sx12[t + 1], m[u]);
         if( min_val >= cost.get_min()){
@@ -136,9 +137,8 @@ public:
         }
         //list of active disks(t-1)
         Cost cost_t_1 = Cost(u, t-1, sx12[u], sx12[t], m[u]);
-        r2 = (m[t] - m[u] - cost_t_1.get_coef_Var())/cost_t_1.get_coef();  //suprimer définitions itératives (*)
-        list_disk.push_back(Disk(cost_t_1.get_mu1(),cost_t_1.get_mu2(), sqrt(r2)));// replacer  Disk disk = Disk(cost_t_1.get_mu1(),cost_t_1.get_mu2(), sqrt(r2));list_disk.push_back(disk);
-    
+        r2 = (m[t] - m[u] - cost_t_1.get_coef_Var())/cost_t_1.get_coef();  
+        list_disk.push_back(Disk(cost_t_1.get_mu1(),cost_t_1.get_mu2(), sqrt(r2)));
         ++rit_geom;
       }
       //best last changepoints and means
@@ -151,19 +151,19 @@ public:
       
       //Initialisation of geometry----------------------------------------------
       geom.InitialGeometry(t, list_disk);
-      list_geom.push_back(geom);//(**) geom = GeomX(t)
+      list_geom.push_back(geom);
       
       //Second run: Update list of geometry-------------------------------------
-      typename std::list<GeomX>::iterator it_geom = list_geom.begin();//supprimer ligne it_geom = list_geom.begin(); 
+      typename std::list<GeomX>::iterator it_geom = list_geom.begin();
       while (it_geom != list_geom.end()){
         lbl = it_geom -> get_label_t();
         cost = Cost(lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
-        r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();//suprimer définitions itératives (*)
+        r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
         //PELT
         if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;}
         //FPOP
         if (r2 > 0){
-          it_geom -> UpdateGeometry(Disk(cost.get_mu1(), cost.get_mu2(), sqrt(r2))); //suprimer définitions itératives (*)
+          it_geom -> UpdateGeometry(Disk(cost.get_mu1(), cost.get_mu2(), sqrt(r2))); 
           if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;}
           else {if (test_mode == true && (type == 2 || type == 3)){ test_file << it_geom ->get_label_t() << " "<< it_geom ->get_disks_t_1().size() << " ";}}
         }//else
@@ -181,11 +181,11 @@ public:
       chp = last_chpt_mean[0][chp-1];
     }
     reverse(chpts.begin(), chpts.end());
-    chpts.pop_back();                 // vector chpt (tau1,.., tauk) sans n!!!!
+    chpts.pop_back();                
     reverse(means1.begin(), means1.end());
     reverse(means2.begin(), means2.end());
     
-    globalCost = m[n + 1] - penalty * chpts.size();   // c'est vrai ou non??????
+    globalCost = m[n + 1] - penalty * chpts.size();  
     //memory--------------------------------------------------------------------
     for(unsigned int i = 0; i < 3; i++) {delete(last_chpt_mean[i]);}
     delete [] last_chpt_mean;
