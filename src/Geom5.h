@@ -32,8 +32,8 @@ public:
   
   double distance(double a1, double a2, double b1, double b2);
   
-  void InitialGeometry(std::list<Disk> const& disks);
-  void UpdateGeometry(Disk disk_t);
+  void InitialGeometry(unsigned int i, std::list<Disk> const& disks);// ( std::list<Disk> const& disks) => (unsigned int i, std::list<Disk> const& disks)
+  void UpdateGeometry(const Disk &disk_t);                          // (Disk disk_t) => (const Disk &disk_t)
   bool EmptyGeometry();
 };
 #endif //GEOM5_H

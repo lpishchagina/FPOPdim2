@@ -29,8 +29,9 @@ double Geom5::distance(double a1, double a2, double b1, double b2)
 }
 
 
-void Geom5::InitialGeometry(std::list<Disk> const& disks)
+void Geom5::InitialGeometry(unsigned int i, std::list<Disk> const& disks)// CHANGE ( std::list<Disk> const& disks) => (unsigned int i, std::list<Disk> const& disks)
 {
+  label_t = i;// CHANGE add label_t = i;
   disks_t_1 = disks;
 }
 
@@ -38,7 +39,7 @@ void Geom5::InitialGeometry(std::list<Disk> const& disks)
 bool Geom5::EmptyGeometry(){return fl_empty;}
 
 
-void Geom5::UpdateGeometry(Disk disk_t)
+void Geom5::UpdateGeometry(const Disk &disk_t) // CHANGE (Disk disk_t) => (const Disk &disk_t)
 {
   //
   // STEP 1 : disks inclusion & intersection
