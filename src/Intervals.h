@@ -15,7 +15,7 @@ class Intervals
     
   public:
     Intervals(){interv.push_back(Interval(-M_PI, M_PI));};
-    bool isempty(){interv.empty();};
+    bool isempty(){return(interv.empty());};
     void intersection(Interval const& inter);
     std::list<Point> buildPoints(Disk const& disk_t);
 }; 
