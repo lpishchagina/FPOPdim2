@@ -54,7 +54,6 @@ private:
   std::vector<double> means1;         //means vector for y1
   std::vector<double> means2;         //means vector for y2        
   double globalCost;                  //value of global cost
-  double* m;                          //globalCost = m[n+1] - chpts.size()*penalty
   GeomX geom;
   std::list<GeomX> list_geom;    //list of geometry
 public:
@@ -65,15 +64,12 @@ public:
     penalty = beta;
     sx12 = new double*[n+1]; 
     for(unsigned int i = 0; i < n + 1; i++) {sx12[i] = new double[4];}
-    m = new double[n + 1];        // "globalCost" = m[n+1] - chpts.size()*penalty
   }
   //----------------------------------------------------------------------------
   ~OP<GeomX>(){
     for(unsigned int i = 0; i < n+1; i++) {delete(sx12[i]);}
     delete [] sx12;
     sx12 = NULL;
-    delete [] m;
-    m = NULL;
   }
   //----------------------------------------------------------------------------
   std::vector< unsigned int > get_chpts() const {return chpts;}
@@ -98,7 +94,8 @@ public:
   void algoFPOP(std::vector<double>& x1, std::vector<double>& x2, int type, bool test_mode){
     //preprocessing-------------------------------------------------------------
     sx12 = vect_sx12(x1, x2); 
-    m[0] = 0;
+    double* m = new double[n + 1];        // "globalCost" = m[n] - chpts.size()*penalty
+    m[0] = 0;  
     double** last_chpt_mean = new double*[3];// vectors of best last changepoints, mean1 and mean2
     for(unsigned int i = 0; i < 3; i++) {last_chpt_mean[i] = new double[n];}
     
@@ -148,7 +145,6 @@ public:
       //new min 
       
       m[t + 1] = min_val + penalty; 
-      
       //Initialisation of geometry----------------------------------------------
       geom.InitialGeometry(t, list_disk);
       list_geom.push_back(geom);
@@ -181,15 +177,17 @@ public:
       chp = last_chpt_mean[0][chp-1];
     }
     reverse(chpts.begin(), chpts.end());
+    globalCost = m[n] - penalty * chpts.size();  
     chpts.pop_back();                
     reverse(means1.begin(), means1.end());
     reverse(means2.begin(), means2.end());
-    
-    globalCost = m[n + 1] - penalty * chpts.size();  
+
     //memory--------------------------------------------------------------------
     for(unsigned int i = 0; i < 3; i++) {delete(last_chpt_mean[i]);}
     delete [] last_chpt_mean;
     last_chpt_mean = NULL;
+    delete [] m;
+    m = NULL;
   }
   //----------------------------------------------------------------------------
 };
