@@ -14,7 +14,8 @@
 #' @examples
 #' Data <- data_gen2D(n = 10, chpts = NULL, means1 = 0, means2 = 0, noise = 1)
 
-data_gen2D <- function(n, chpts = NULL, means1 = 0, means2 = 0, noise = 1){
+data_gen2D <- function(n, chpts = NULL, means1 = 0, means2 = 0, noise = 1)
+{
   #---stop---#
   if (!is.null(chpts) && n <= chpts[length(chpts)]){stop('last element of changepoints is always less than n')}
   if(!is.null(chpts) && !is.numeric(chpts)){stop('changepoints are not all numeric')}
