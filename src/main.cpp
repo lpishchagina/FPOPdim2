@@ -38,8 +38,8 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
   //----------stop--------------------------------------------------------------
   if(data1.size() != data2.size()){throw std::range_error("data1 and data2 have different length");}
   if(penalty < 0) {throw std::range_error("penalty should be a non-negative number");}
-  if(type < 1 || type > 3)
-  {throw std::range_error("type must be one of: 1,2 or 3");}
+  if(type < 1 || type > 5)
+  {throw std::range_error("type must be one of: 1,2,3 or 5");}
   //----------------------------------------------------------------------------
   List res;
   bool test;
