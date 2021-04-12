@@ -16,10 +16,12 @@ void Intervals::print()
     std::cout << (*it).get_left() << " " <<  (*it).get_right() << " --- ";
     ++it;
   }
+  std::cout << std::endl;
 }
 
 void Intervals::intersection(Interval const& inter)
 {
+  nbIntersections = nbIntersections + 1;
   double angle1 = inter.get_left();
   double angle2 = inter.get_right();
 

@@ -94,50 +94,43 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
   
   Intervals intervals; // contains one Interval [-PI,PI]
   Interval currentInter;
-  //std::cout << " FIRST ";
-  // (i) exclusion disks disks_t_1
-  bool disk_t_1_in_inter = true;
+
+    // (i) exclusion disks disks_t_1
   it = disks_t_1.begin();
-  while(it != disks_t_1.end())
+  while((it != disks_t_1.end()) && (intervals.isempty() == false))
   {
     if(distance(disk_t.get_center1(), disk_t.get_center2(), (*it).get_center1(), (*it).get_center2()) > (disk_t.get_radius() - (*it).get_radius()))
     {
       currentInter.Interval_intersection(disk_t, (*it));
-      //std::cout << currentInter.get_left() << " " << currentInter.get_right() << " -A- ";
-      currentInter.symmetry();
       intervals.intersection(currentInter);
-      disk_t_1_in_inter = false;
-      //std::cout << currentInter.get_left() << " " << currentInter.get_right() << " -B- " << M_PI << " PI ";
     }
     ++it;
   }
-  //intervals.print();
-  //std::cout << std::endl;
-  
+
   // (ii) new FrontierPoints if no disks_inter
   if(disks_inter.empty())
   {
     FrontierPoints.clear();
     FrontierPoints = intervals.buildPoints(disk_t);
-    if(FrontierPoints.empty() && disk_t_1_in_inter == false) // disk_t in exclusion disks
+    if(FrontierPoints.empty() && intervals.get_nbIntersections() > 0) // disk_t in exclusion disks
     {
-      
       fl_empty = true; 
       return;
     } 
   }
   else  // (iii) intersection disks disks_inter
-  {/*  
+  {
     it = disks_inter.begin();
-    while(it != disks_inter.end())
+    while(it != disks_inter.end() && (intervals.isempty() == false))
     {
       currentInter.Interval_intersection(disk_t, (*it));
+      currentInter.symmetry();
       intervals.intersection(currentInter);
       ++it;
     }
     
     // (iv) add disk_t and update FrontierPoints if intervals non empty
-    if(!intervals.isempty())
+    if(intervals.isempty() == false)
     {
       disks_inter.push_back(disk_t); ///ADD THE NEW DISK 
       
@@ -151,6 +144,7 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
         }
         else{++itP;}
       }
+      //add the new points
       FrontierPoints.splice(FrontierPoints.end(), intervals.buildPoints(disk_t));   
     }
     else // intervals = NULL => test all the points
@@ -159,7 +153,7 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
       std::list<Point>::iterator itP = FrontierPoints.begin();
       while(itP != FrontierPoints.end())
       {
-        if(distance((*itP).get_x(),(*itP).get_y(),disk_t.get_center1(), disk_t.get_center2()) < disk_t.get_radius())
+        if(distance((*itP).get_x(), (*itP).get_y(),disk_t.get_center1(), disk_t.get_center2()) < disk_t.get_radius())
         {
           oneInside = true;
           ++itP;
@@ -170,7 +164,6 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
         }
       }
       if(oneInside == false){fl_empty = true;}
-    }*/
+    }
   }
-  
 } 

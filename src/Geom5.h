@@ -6,7 +6,6 @@
 #include <list>
 #include <iterator>
 
-#include "Cost.h"
 #include "Disk.h"
 #include "Point.h"
 #include "Intervals.h"

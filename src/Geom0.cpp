@@ -1,4 +1,3 @@
-#include "Disk.h"
 #include "Geom0.h"
 
 #include <iostream>
@@ -9,10 +8,12 @@
 using namespace std;
 
 //constructor*******************************************************************
-Geom0::Geom0(){
+Geom0::Geom0()
+{
   label_t = 0;
 }
-Geom0::Geom0(unsigned  int t){
+Geom0::Geom0(unsigned  int t)
+{
   label_t = t; 
 }
 

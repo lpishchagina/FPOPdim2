@@ -7,8 +7,6 @@
 #include <iterator>
 
 #include "Disk.h"
-#include "Rect.h"
-#include "Cost.h"
 
 //Class Geom0
 //------------------------------------------------------------------------------

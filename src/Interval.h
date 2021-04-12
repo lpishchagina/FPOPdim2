@@ -35,7 +35,7 @@ class Interval
       double c = RP*RM - U2;
       double d = sqrt((RP*RP - U2)*(U2 - RM*RM));
       double theta = atan2(b,a);
-      double thetaPM = atan2(d,c); //always > 0
+      double thetaPM = abs(atan2(d,c)); //always > 0
       left = theta - thetaPM;
       right = theta + thetaPM;
       if(left < -M_PI){left = left + 2*M_PI;}
