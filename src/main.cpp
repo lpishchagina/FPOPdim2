@@ -49,7 +49,7 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
   if (type == 0)
   {
     //test = true;//
-    OP<Geom1> X = OP<Geom1>(data1, data2, penalty);
+    OP<Geom0> X = OP<Geom0>(data1, data2, penalty);
     X.algoFPOP(data1, data2, type, test);  
     res["chpts"] = X.get_chpts();
     res["means1"] = X.get_means1();

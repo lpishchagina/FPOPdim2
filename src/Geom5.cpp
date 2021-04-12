@@ -20,8 +20,12 @@ Geom5::Geom5(unsigned int t)
   fl_empty = false;
 }
 
-unsigned int Geom5::get_label_t(){return label_t;}
-std::list<Disk> Geom5::get_disks_t_1(){return disks_t_1;}
+
+std::list<Disk> get_disks_t_1();
+
+
+unsigned int Geom5::get_label_t() const {return label_t;}
+std::list<Disk> Geom5::get_disks_t_1() const {return disks_t_1;}
 
 double Geom5::distance(double a1, double a2, double b1, double b2)
 {
@@ -92,6 +96,7 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
   Interval currentInter;
   //std::cout << " FIRST ";
   // (i) exclusion disks disks_t_1
+  bool disk_t_1_in_inter = true;
   it = disks_t_1.begin();
   while(it != disks_t_1.end())
   {
@@ -101,6 +106,7 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
       //std::cout << currentInter.get_left() << " " << currentInter.get_right() << " -A- ";
       currentInter.symmetry();
       intervals.intersection(currentInter);
+      disk_t_1_in_inter = false;
       //std::cout << currentInter.get_left() << " " << currentInter.get_right() << " -B- " << M_PI << " PI ";
     }
     ++it;
@@ -113,11 +119,12 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
   {
     FrontierPoints.clear();
     FrontierPoints = intervals.buildPoints(disk_t);
-    if(FrontierPoints.empty())
+    if(FrontierPoints.empty() && disk_t_1_in_inter == false) // disk_t in exclusion disks
     {
-      //fl_empty = true; 
+      
+      fl_empty = true; 
       return;
-    }  // disk_t in exclusion disks
+    } 
   }
   else  // (iii) intersection disks disks_inter
   {/*  

@@ -28,8 +28,8 @@ class Geom5
     Geom5();
     Geom5(unsigned int t);
     
-    unsigned int get_label_t();
-    std::list<Disk> get_disks_t_1();
+    unsigned int get_label_t() const;
+    std::list<Disk> get_disks_t_1() const;
     
     double distance(double a1, double a2, double b1, double b2);
     

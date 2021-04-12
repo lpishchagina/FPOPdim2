@@ -58,11 +58,15 @@ std::list<Point> Intervals::buildPoints(Disk const& disk_t)
   std::list<Interval>::iterator it = interv.begin();
 
   double R = disk_t.get_radius();
-  
+  double theta;
   while(it != interv.end())
   {
-    myList.push_back(Point(disk_t.get_center1() + R*cos((*it).get_left()), disk_t.get_center1() + R*sin((*it).get_left())));
-    myList.push_back(Point(disk_t.get_center1() + R*cos((*it).get_right()), disk_t.get_center1() + R*sin((*it).get_right())));
+    theta = (*it).get_left();
+    if((theta != -M_PI) && (theta != M_PI))
+    {myList.push_back(Point(disk_t.get_center1() + R*cos(theta), disk_t.get_center1() + R*sin(theta)));}
+    theta = (*it).get_right();
+    if((theta != -M_PI) && (theta != M_PI))
+    {myList.push_back(Point(disk_t.get_center1() + R*cos(theta), disk_t.get_center1() + R*sin(theta)));}
     ++it;
   }
   return(myList);
