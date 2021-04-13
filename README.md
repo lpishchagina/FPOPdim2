@@ -7,13 +7,18 @@
 
 `FPOPdim2` is an R package written in Rcpp/C++ and developed to detection changepoints using the Functional Pruning Optimal Partitioning method (FPOP) in bivariate time series of length `n`. 
 
-The package implements the following types of FPOP-pruning: 
+The package implements the following types of pruning: 
+
+`type = 0`: PELT method; 
 
 `type = 1`: ("intersection" of sets), approximation - "rectangle"; 
 
 `type = 2`:("intersection" of sets)"minus"("union" of sets), approximation - "rectangle";
 
-`type = 3`: (last disk)"minus"("union" of sets), approximation - "disk".
+`type = 3`: (last disk)"minus"("union" of sets), approximation - "disk";
+
+`type = 5`: ...;
+
 
 
 We present a basic use of the main functions of the `FPOPdim2` package. 
@@ -49,7 +54,7 @@ size <- 1000
 
 Data1 <- data_gen2D(size) 
  
-Data2 <-  data_gen2D(n = size, chpts = 50, means1 = c(0,1), means2 = c(0,1), noise = 1)
+Data2 <-  data_gen2D(n = size, chpts = 50, means1 = c(0,1), means2 = c(0,1))
 ```
 ## The function FPOP2D
 
@@ -65,26 +70,34 @@ The `penalty` here equals to a classic `2*(noise^2)*log(n)`.
 
 `type` is a value defining the  type of geometry for FPOP-pruning.
 
-The `type` must be either `1`, `2` or `3`:
+The `type` must be either `0`, `1`, `2`, `3` or `5`:
+
+`type = 0`: PELT method; 
 
 `type = 1`: ("intersection" of sets), approximation - "rectangle"; 
 
 `type = 2`:("intersection" of sets)"minus"("union" of sets), approximation - "rectangle";
 
-`type = 3`: (last disk)"minus"("union" of sets), approximation - "disk".
+`type = 3`: (last disk)"minus"("union" of sets), approximation - "disk";
+
+`type = 5`: ..... 
 
 We choose a Gaussian cost in 2-dimension.
 
 ```r
 library(base)
 
+library(FPOPdim2)
+
 set.seed(13)
 
 size <- 1000
 
-beta <- 2 * log(size)
+beta <- 4 * log(size)
 
 Data1 <- data_gen2D(size) 
+
+FPOP2D(Data1[1,], Data1[2,], penalty = beta, type = 0)
 
 FPOP2D(Data1[1,], Data1[2,], penalty = beta, type = 1)
 
@@ -92,25 +105,39 @@ FPOP2D(Data1[1,], Data1[2,], penalty = beta, type = 2)
 
 FPOP2D(Data1[1,], Data1[2,], penalty = beta, type = 3)
 
-```
+FPOP2D(Data1[1,], Data1[2,], penalty = beta, type = 5)
 
 ```
+
+```r
 $chpts
 numeric(0)
 
 $means1
-[1] -0.000587651
+[1] -0.003112923
 
 $means2
-[1] 0.02661018
+[1] 0.0008128666
  
 $globalCost
-[1] 2.696697e-231
+[1] 1978.728
 
 ```
 
-```
-Data2 <- data_gen2D(n = size, chpts = 50, means1 = c(0,1), means2 = c(0,1), noise = 1)
+```r
+library(base)
+
+library(FPOPdim2)
+
+set.seed(13)
+
+size <- 1000
+
+beta <- 4 * log(size)
+
+Data2 <- data_gen2D(n = size, chpts = 50, means1 = c(0,1), means2 = c(0,1))
+
+FPOP2D(Data2[1,], Data2[2,], penalty = beta, type = 0)
 
 FPOP2D(Data2[1,], Data2[2,], penalty = beta, type = 1)
 
@@ -118,17 +145,22 @@ FPOP2D(Data2[1,], Data2[2,], penalty = beta, type = 2)
 
 FPOP2D(Data2[1,], Data2[2,], penalty = beta, type = 3)
 
+FPOP2D(Data2[1,], Data2[2,], penalty = beta, type = 5)
+
+```
+
+```r
 $chpts
-[1] 50
+[1] 49
 
 $means1
-[1] -0.1255619  0.9782501
+[1] -0.05569976  0.99854507
 
 $means2
-[1] -0.2024644  0.9723707
+[1] -0.08093126  1.00397318
 
 $globalCost
-[1] -13.81551
+[1] 1974.816
 
 ```
 
