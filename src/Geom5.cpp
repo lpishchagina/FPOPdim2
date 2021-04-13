@@ -50,7 +50,7 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
   double dist;
   std::list<Disk>::iterator it = disks_t_1.begin();
   
-  // (i) Remove disk in disks_t_1 or prove emptiness
+  // (i) prove emptiness or remove disk in disks_t_1
   while(it != disks_t_1.end())
   {
     dist = distance(disk_t.get_center1(), disk_t.get_center2(), (*it).get_center1(), (*it).get_center2());
@@ -58,6 +58,7 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
     {
       if(dist <= ((*it).get_radius() - disk_t.get_radius()))
       {
+        std::cout << "1";
         fl_empty = true;
         return;
       }
@@ -66,11 +67,15 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
     else {it = disks_t_1.erase(it);} 
   }
   
-  // (ii) Remove disk in disks_inter or prove emptiness
+  // (ii) Stop pruning or remove disk in disks_inter or prove emptiness
   it = disks_inter.begin();
   while(it != disks_inter.end())
   {
     dist = distance(disk_t.get_center1(), disk_t.get_center2(), (*it).get_center1(), (*it).get_center2());
+    if (dist <= (disk_t.get_radius() - (*it).get_radius()))
+    {
+       return; // case disk_t contains one disks_inter ! 
+    }
     if(dist < ((*it).get_radius() + disk_t.get_radius()))
     {
       if (dist <= ((*it).get_radius() - disk_t.get_radius()))
@@ -80,16 +85,21 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
     }
     else
     {
+      std::cout << "2";
       fl_empty = true;
       return;
     }
   }
-  // disks_inter.push_back(disk_t); // TEST
-  // std::cout << disks_inter.size() << " "; // TEST
   
-  //
+  if(disks_inter.empty() && disks_t_1.empty())
+  {
+    //FrontierPoints.push_back(Point(disk_t.get_center1(), disk_t.get_center2()));  ///ADD Frontier points
+    disks_inter.push_back(disk_t);
+    return;
+  }
+
   // STEP 2 : if necessary, find frontier points (xy coordinates)
-  // /if no intersection disk => build new frontier Points
+  // 
   //
   
   Intervals intervals; // contains one Interval [-PI,PI]
@@ -100,42 +110,72 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
   while((it != disks_t_1.end()) && (intervals.isempty() == false))
   {
     if(distance(disk_t.get_center1(), disk_t.get_center2(), (*it).get_center1(), (*it).get_center2()) > (disk_t.get_radius() - (*it).get_radius()))
-    {
+    { // = if there exists an intersection between the 2 disks
+      std:cout << "INTERSECTION" << std::endl;
       currentInter.Interval_intersection(disk_t, (*it));
       intervals.intersection(currentInter);
     }
     ++it;
   }
 
-  // (ii) new FrontierPoints if no disks_inter
+  // (ii) no disks_inter test only intervals 
   if(disks_inter.empty())
   {
-    FrontierPoints.clear();
-    FrontierPoints = intervals.buildPoints(disk_t);
-    if(FrontierPoints.empty() && intervals.get_nbIntersections() > 0) // disk_t in exclusion disks
+    if(intervals.isempty() == true) // disk_t in exclusion disks
     {
+      std::cout << "3";
       fl_empty = true; 
       return;
     } 
+    FrontierPoints.splice(FrontierPoints.begin(), (intervals.buildPoints(disk_t)));  ///ADD Frontier points
+    disks_inter.push_back(disk_t); ///ADD THE NEW DISK 
+    std::cout << " nb points " << FrontierPoints.size() << std::endl;
   }
-  else  // (iii) intersection disks disks_inter
-  {
+  else  ///// (iii) intersection disks disks_inter /////// START PB !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  {   std::cout << " nb points " << FrontierPoints.size() << std::endl;
+    /////// TESTTESTTESTTESTTESTTESTTESTTEST
+
     it = disks_inter.begin();
     while(it != disks_inter.end() && (intervals.isempty() == false))
     {
+      std::cout << " LABEL " << label_t << std::endl;
+      intervals.print();
+      std::cout << "EXCLUSION " << std::endl;
       currentInter.Interval_intersection(disk_t, (*it));
+      std::cout << " INTERVAL2 " << currentInter.get_left() <<  " " << currentInter.get_right() << std::endl;
       currentInter.symmetry();
+      std::cout << " INTERVAL3 " << currentInter.get_left() <<  " " << currentInter.get_right() << std::endl;
+      
       intervals.intersection(currentInter);
+      intervals.print();
+      std::cout << std::endl;
       ++it;
     }
+    if(intervals.buildPoints(disk_t).empty() && intervals.get_nbIntersections() > 0) // disk_t in exclusion disks
+    {
+      //std::cout << "8";
+      //return;
+    } 
+    /////// TESTTESTTESTTESTTESTTESTTESTTEST
     
     // (iv) add disk_t and update FrontierPoints if intervals non empty
+    
+    //remove some FrontierPoints
+    std::list<Point>::iterator itP;
     if(intervals.isempty() == false)
     {
       disks_inter.push_back(disk_t); ///ADD THE NEW DISK 
+      int NB = 0;
+      itP = FrontierPoints.begin();
+      while(itP != FrontierPoints.end())
+      {
+        NB = NB + 1;
+        //std::cout << " p " << (*itP).get_x() << " " << (*itP).get_y() << " p ";
+        ++itP;
+      }
+      //std::cout << " NB1 " << NB << " ";
       
-      //remove some FrontierPoints
-      std::list<Point>::iterator itP = FrontierPoints.begin();
+      itP = FrontierPoints.begin();
       while(itP != FrontierPoints.end())
       {
         if(distance((*itP).get_x(),(*itP).get_y(),disk_t.get_center1(), disk_t.get_center2()) > disk_t.get_radius())
@@ -145,25 +185,51 @@ void Geom5::UpdateGeometry(Disk const& disk_t)
         else{++itP;}
       }
       //add the new points
-      FrontierPoints.splice(FrontierPoints.end(), intervals.buildPoints(disk_t));   
-    }
-    else // intervals = NULL => test all the points
-    {
-      bool oneInside = false;
-      std::list<Point>::iterator itP = FrontierPoints.begin();
+      NB = 0;
+      itP = FrontierPoints.begin();
       while(itP != FrontierPoints.end())
       {
-        if(distance((*itP).get_x(), (*itP).get_y(),disk_t.get_center1(), disk_t.get_center2()) < disk_t.get_radius())
+        NB = NB + 1;
+        //std::cout << " p " << (*itP).get_x() << " " << (*itP).get_y() << " p ";
+        ++itP;
+      }
+      //std::cout << " NB2 " << NB << " ";
+    
+      FrontierPoints.splice(FrontierPoints.begin(), (intervals.buildPoints(disk_t))); 
+      itP = FrontierPoints.begin();
+      NB = 0;
+      while(itP != FrontierPoints.end())
+      {
+        NB = NB + 1;
+        //std::cout << " p " << (*itP).get_x() << " " << (*itP).get_y() << " p ";
+        ++itP;
+      }
+      //std::cout << " NB3 " << NB << " L " << intervals.get_length() << " ";
+      //if(intervals.get_length() > 2){intervals.print();}
+    }
+    else // intervals = NULL => test all the points
+    { 
+      //std::cout << "X";
+      bool onePointInside = false;
+      std::list<Point>::iterator itP = FrontierPoints.begin();
+     // std::cout << "LENGTH " << FrontierPoints.size() << std::endl;
+      while(itP != FrontierPoints.end())
+      {
+        //if(distance((*itP).get_x(), (*itP).get_y(), disk_t.get_center1(), disk_t.get_center2()) > disk_t.get_radius())
+        //{std::cout << "ZZZZ " << (*itP).get_x() << " " << (*itP).get_y() << " " << disk_t.get_center1() << " "<< disk_t.get_center2() << " R " << disk_t.get_radius() << " d " << distance((*itP).get_x(), (*itP).get_y(), disk_t.get_center1(), disk_t.get_center2())  << std::endl;}
+        if(distance((*itP).get_x(), (*itP).get_y(), disk_t.get_center1(), disk_t.get_center2()) <= disk_t.get_radius())
         {
-          oneInside = true;
+         // std::cout << "YYYY " << (*itP).get_x() << " " << (*itP).get_y() << " " << disk_t.get_center1() << " "<< disk_t.get_center2() << " R " << disk_t.get_radius() << " d " << distance((*itP).get_x(), (*itP).get_y(), disk_t.get_center1(), disk_t.get_center2())  << std::endl;
+          onePointInside = true;
           ++itP;
         }
         else
         {
-          itP = FrontierPoints.erase(itP);
+          //itP = FrontierPoints.erase(itP);
+          ++itP;
         }
       }
-      if(oneInside == false){fl_empty = true;}
+     if(onePointInside == false){std::cout << "4"; fl_empty = true;}
     }
   }
 } 

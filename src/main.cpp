@@ -8,6 +8,7 @@
 #include "Geom2.h"
 #include "Geom3.h"
 #include "Geom5.h"
+#include "Geom6.h"
 
 #include "math.h"
 #include <Rcpp.h>
@@ -40,8 +41,8 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
   //----------stop--------------------------------------------------------------
   if(data1.size() != data2.size()){throw std::range_error("data1 and data2 have different length");}
   if(penalty < 0) {throw std::range_error("penalty should be a non-negative number");}
-  if(type < 0 || type > 5)
-  {throw std::range_error("type must be one of: 0,1,2,3 or 5");}
+  if(type < 0 || type > 6)
+  {throw std::range_error("type must be one of: 0,1,2,3, 5 or 6");}
   //----------------------------------------------------------------------------
   List res;
   bool test;
@@ -90,6 +91,16 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
   {
     //test = true;//
     OP<Geom5> Z = OP<Geom5>(data1, data2, penalty);
+    Z.algoFPOP(data1, data2, type, test);   
+    res["chpts"] = Z.get_chpts();
+    res["means1"] = Z.get_means1();
+    res["means2"] = Z.get_means2();
+    res["globalCost"] = Z.get_globalCost();
+  }
+  if (type == 6)
+  {
+    //test = true;//
+    OP<Geom6> Z = OP<Geom6>(data1, data2, penalty);
     Z.algoFPOP(data1, data2, type, test);   
     res["chpts"] = Z.get_chpts();
     res["means1"] = Z.get_means1();

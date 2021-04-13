@@ -19,6 +19,7 @@ class Intervals
     bool isempty(){return(interv.empty());};
     void intersection(Interval const& inter);
     unsigned int get_nbIntersections(){return nbIntersections;};
+    unsigned int get_length(){return interv.size();};
     std::list<Point> buildPoints(Disk const& disk_t);
     void print();
 }; 

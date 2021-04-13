@@ -26,7 +26,7 @@ void Intervals::intersection(Interval const& inter)
   double angle2 = inter.get_right();
 
   std::list<Interval>::iterator it = interv.begin();
-  
+  //std::cout << "A"; print();
   /// case 1 : oriented interval
   if(angle1 <= angle2)
   {
@@ -50,6 +50,8 @@ void Intervals::intersection(Interval const& inter)
       currentInterval.intersection(angle1, M_PI);   
       if(!currentInterval.isempty()){interv.insert(it, currentInterval);}
     }
+    //std::cout << angle1 << " " << angle2 << std::endl;    
+    //std::cout << "B"; print();
   }
 }
 
@@ -65,10 +67,10 @@ std::list<Point> Intervals::buildPoints(Disk const& disk_t)
   {
     theta = (*it).get_left();
     if((theta != -M_PI) && (theta != M_PI))
-    {myList.push_back(Point(disk_t.get_center1() + R*cos(theta), disk_t.get_center1() + R*sin(theta)));}
+    {myList.push_back(Point(disk_t.get_center1() + R*cos(theta), disk_t.get_center2() + R*sin(theta)));}
     theta = (*it).get_right();
     if((theta != -M_PI) && (theta != M_PI))
-    {myList.push_back(Point(disk_t.get_center1() + R*cos(theta), disk_t.get_center1() + R*sin(theta)));}
+    {myList.push_back(Point(disk_t.get_center1() + R*cos(theta), disk_t.get_center2() + R*sin(theta)));}
     ++it;
   }
   return(myList);

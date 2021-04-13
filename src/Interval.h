@@ -35,11 +35,17 @@ class Interval
       double c = RP*RM - U2;
       double d = sqrt((RP*RP - U2)*(U2 - RM*RM));
       double theta = atan2(b,a);
-      double thetaPM = abs(atan2(d,c)); //always > 0
+      double thetaPM = atan2(d,c); //always > 0
       left = theta - thetaPM;
       right = theta + thetaPM;
       if(left < -M_PI){left = left + 2*M_PI;}
       if(right > M_PI){right = right - 2*M_PI;}
+      std::cout << " a " << a << std::endl;
+      std::cout << " b " << b << std::endl;
+      std::cout << " c " << c << std::endl;
+      std::cout << " d " << d << std::endl;
+      std::cout << " theta " << theta << std::endl;
+      std::cout << " thetaPM " << thetaPM << std::endl;
     };
     
     void symmetry()
