@@ -9,7 +9,8 @@ using namespace std;
 using namespace Rcpp;
 
 //constructor*******************************************************************
-Cost::Cost(unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen){
+Cost::Cost(unsigned int i, unsigned int t, double* si_1, double* st, double mi_1pen)
+{
   coef = t - i + 1;
   mu1 = (st[0] - si_1[0])/(t - i + 1);
   mu2 = (st[1] - si_1[1])/(t - i + 1);

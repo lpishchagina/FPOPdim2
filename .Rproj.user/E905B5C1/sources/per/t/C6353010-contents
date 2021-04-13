@@ -1,5 +1,0 @@
-useDynLib(FPOPdim2, .registration=TRUE)
-importFrom("stats", "rnorm")
-importFrom("graphics", "abline", "lines", "par")
-importFrom(Rcpp, evalCpp)
-exportPattern("^[[:alpha:]]+")

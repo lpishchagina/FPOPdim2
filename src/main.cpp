@@ -3,6 +3,7 @@
 #include "Rect.h"
 #include "Cost.h"
 
+#include "Geom0.h"
 #include "Geom1.h"
 #include "Geom2.h"
 #include "Geom3.h"
@@ -34,26 +35,39 @@
 //'             
 //' @examples FPOP2D (data1 = c(0,0,0,1,1,1), data2 = c(2,2,2,0,0,0), penalty = 2*log(6),  type = 1) 
 // [[Rcpp::export]]
-List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty, int type) {
+List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty, int type)
+{
   //----------stop--------------------------------------------------------------
   if(data1.size() != data2.size()){throw std::range_error("data1 and data2 have different length");}
   if(penalty < 0) {throw std::range_error("penalty should be a non-negative number");}
-  if(type < 1 || type > 5)
-  {throw std::range_error("type must be one of: 1,2,3 or 5");}
+  if(type < 0 || type > 5)
+  {throw std::range_error("type must be one of: 0,1,2,3 or 5");}
   //----------------------------------------------------------------------------
   List res;
   bool test;
   test = false;
-  if (type == 1){
+  if (type == 0)
+  {
     //test = true;//
-    OP<Geom1> X = OP<Geom1>(data1, data2, penalty);
-    X.algoFPOP(data1, data2, type, test);     
+    OP<Geom0> X = OP<Geom0>(data1, data2, penalty);
+    X.algoFPOP(data1, data2, type, test);  
     res["chpts"] = X.get_chpts();
     res["means1"] = X.get_means1();
     res["means2"] = X.get_means2();
     res["globalCost"] = X.get_globalCost();
   }
-  if (type == 2){
+  if (type == 1)
+  {
+    //test = true;//
+    OP<Geom1> X = OP<Geom1>(data1, data2, penalty);
+    X.algoFPOP(data1, data2, type, test);  
+    res["chpts"] = X.get_chpts();
+    res["means1"] = X.get_means1();
+    res["means2"] = X.get_means2();
+    res["globalCost"] = X.get_globalCost();
+  }
+  if (type == 2)
+  {
     //test = true;//
     OP<Geom2> Y = OP<Geom2>(data1, data2, penalty);
     Y.algoFPOP(data1, data2, type, test);   
@@ -62,7 +76,8 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
     res["means2"] = Y.get_means2();
     res["globalCost"] = Y.get_globalCost();
   }
-  if (type == 3){
+  if (type == 3)
+  {
     //test = true;//
     OP<Geom3> Z = OP<Geom3>(data1, data2, penalty);
     Z.algoFPOP(data1, data2, type, test);   
@@ -71,7 +86,8 @@ List FPOP2D(std::vector<double> data1, std::vector<double> data2, double penalty
     res["means2"] = Z.get_means2();
     res["globalCost"] = Z.get_globalCost();
   }
-  if (type == 5){
+  if (type == 5)
+  {
     //test = true;//
     OP<Geom5> Z = OP<Geom5>(data1, data2, penalty);
     Z.algoFPOP(data1, data2, type, test);   

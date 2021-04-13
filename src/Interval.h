@@ -3,6 +3,9 @@
 
 #include "Disk.h"
 #include "math.h"
+#include <iostream>
+
+using namespace std;
 
 class Interval
 {
@@ -29,10 +32,10 @@ class Interval
       double U2 = a*a + b*b;
       double RP = diskEx.get_radius() + disk.get_radius();
       double RM = diskEx.get_radius() - disk.get_radius();
-      double c = sqrt((RP*RP - U2)*(U2 - RM*RM));
-      double d = RP*RM - U2;
+      double c = RP*RM - U2;
+      double d = sqrt((RP*RP - U2)*(U2 - RM*RM));
       double theta = atan2(b,a);
-      double thetaPM = atan2(d,c);
+      double thetaPM = abs(atan2(d,c)); //always > 0
       left = theta - thetaPM;
       right = theta + thetaPM;
       if(left < -M_PI){left = left + 2*M_PI;}
@@ -42,8 +45,8 @@ class Interval
     void symmetry()
     {
       double temp = left;
-      left= right;
-      right= temp;
+      left = right;
+      right = temp;
     };
 };
 

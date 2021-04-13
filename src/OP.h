@@ -4,6 +4,7 @@
 #include "Rect.h"
 #include "Cost.h"
 
+#include "Geom0.h"
 #include "Geom1.h"
 #include "Geom2.h"
 #include "Geom3.h"
@@ -91,7 +92,8 @@ public:
     return(sx12);
   }
   //----------------------------------------------------------------------------
-  void algoFPOP(std::vector<double>& x1, std::vector<double>& x2, int type, bool test_mode){
+  void algoFPOP(std::vector<double>& x1, std::vector<double>& x2, int type, bool test_mode)
+  {
     //preprocessing-------------------------------------------------------------
     sx12 = vect_sx12(x1, x2); 
     double* m = new double[n + 1];        // "globalCost" = m[n] - chpts.size()*penalty
@@ -111,7 +113,8 @@ public:
     unsigned int u; 
     std::list<Disk> list_disk;//list of active disks(t-1)
     geom = GeomX(0); 
-    for (unsigned int t = 0; t < n ; t++){
+    for (unsigned int t = 0; t < n ; t++)
+    {
       Cost cost = Cost(t, t, sx12[t], sx12[t+1], m[t]);
       min_val = cost.get_min(); //min value of cost  
       mean1 =  cost.get_mu1();   //means for (lbl, t)
@@ -122,11 +125,13 @@ public:
       
       //First run: searching min------------------------------------------------
       typename std::list<GeomX>::reverse_iterator rit_geom = list_geom.rbegin();
-      while(rit_geom!= list_geom.rend()){
+      while(rit_geom!= list_geom.rend())
+      {
         u = rit_geom -> get_label_t(); 
         // Searching: min
         cost = Cost(u, t, sx12[u], sx12[t + 1], m[u]);
-        if( min_val >= cost.get_min()){
+        if( min_val >= cost.get_min())
+        {
           lbl = u;
           min_val = cost.get_min();
           mean1 = cost.get_mu1();
@@ -151,14 +156,16 @@ public:
       
       //Second run: Update list of geometry-------------------------------------
       typename std::list<GeomX>::iterator it_geom = list_geom.begin();
-      while (it_geom != list_geom.end()){
+      while (it_geom != list_geom.end())
+      {
         lbl = it_geom -> get_label_t();
         cost = Cost(lbl, t, sx12[lbl], sx12[t + 1], m[lbl]);
         r2 = (m[t + 1] - m[lbl] - cost.get_coef_Var())/cost.get_coef();
         //PELT
         if (r2 <= 0){it_geom = list_geom.erase(it_geom); --it_geom;}
         //FPOP
-        if (r2 > 0){
+        if (r2 > 0)
+        {
           it_geom -> UpdateGeometry(Disk(cost.get_mu1(), cost.get_mu2(), sqrt(r2))); 
           if (it_geom -> EmptyGeometry()){it_geom = list_geom.erase(it_geom);--it_geom;}
           else {if (test_mode == true && (type == 2 || type == 3)){ test_file << it_geom ->get_label_t() << " "<< it_geom ->get_disks_t_1().size() << " ";}}
@@ -170,17 +177,19 @@ public:
     if (test_mode == true){test_file.close();}
     //Result vectors------------------------------------------------------------
     unsigned int chp = n;
-    while (chp > 0){
+    while (chp > 0)
+    {
       chpts.push_back(chp);
       means1.push_back(last_chpt_mean[1][chp-1]);
       means2.push_back(last_chpt_mean[2][chp-1]);
       chp = last_chpt_mean[0][chp-1];
     }
+    
     reverse(chpts.begin(), chpts.end());
-    globalCost = m[n] - penalty * chpts.size();  
     chpts.pop_back();                
     reverse(means1.begin(), means1.end());
     reverse(means2.begin(), means2.end());
+    globalCost = m[n] - penalty * chpts.size();  
 
     //memory--------------------------------------------------------------------
     for(unsigned int i = 0; i < 3; i++) {delete(last_chpt_mean[i]);}
